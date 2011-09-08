@@ -1,5 +1,5 @@
 //
-//  AudioSegmentBuilder2.h
+//  SubSegmentBuilder.h
 //  iTwelve
 //
 //  Created by David Mojdehi on 8/2/11.

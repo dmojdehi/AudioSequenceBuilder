@@ -1,5 +1,5 @@
 //
-//  AudioSegmentBuilder2Sound.m
+//  SubSegmentBuilderSound.m
 //  iTwelve
 //
 //  Created by David Mojdehi on 8/3/11.
@@ -11,7 +11,6 @@
 #import "AudioSequenceBuilder.h"
 #import "DDXMLElement.h"
 #import <AVFoundation/AVFoundation.h>
-#import "SoundSequencerAppDelegate.h"
 
 @interface LoopLogic : NSObject
 {
@@ -64,7 +63,7 @@
 				mLoopToFitParent = kLoopWholeOnly;
 			else
 			{
-				[NSException raise:@"Unrecognized loopToFitParent option"  format:@"loopToFitParent didn't recognize option '%@', line %d", [loopToFitParentNode stringValue], loopToFitParentNode.line ];
+				[NSException raise:@"Unrecognized loopToFitParent option"  format:@"loopToFitParent didn't recognize option '%@', line %d", [loopToFitParentNode stringValue], 0/*loopToFitParentNode.line*/ ];
 				
 			}
 			
@@ -189,14 +188,14 @@
 		// find the file & load it
 		NSURL *assetUrl = [SubSegmentBuilderSound findAudioFileOfNames:filenamesToLookFor];
 		if(!assetUrl)
-			[NSException raise:@"Unable to find file" format:@"line %d: File '%@', wasn't found (looked for both .mp3 and .m4a)", elem.line, mFilename];
+			[NSException raise:@"Unable to find file" format:@"line %d: File '%@', wasn't found (looked for both .mp3 and .m4a)", 0/*elem.line*/, mFilename];
 		
 		mAsset = [AVURLAsset URLAssetWithURL:assetUrl options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],
 															   AVURLAssetPreferPreciseDurationAndTimingKey, nil] ];
 		//AVURLAsset *asset = [AVURLAsset URLAssetWithURL:assetUrl options:nil];
 		if(!mAsset)
 		{
-			[NSException raise:@"Unable to open file" format:@"line %d: File '%@.mp3' couldn't be opened", elem.line, mFilename];
+			[NSException raise:@"Unable to open file" format:@"line %d: File '%@.mp3' couldn't be opened", 0 /*elem.line*/, mFilename];
 		}
 		[mAsset retain];
 		
@@ -269,7 +268,7 @@
 	if(!sourceAudioTrack)
 	{
 		NSLog(@"...  FAILED to add sound.  There we no audio tracks in the asset");
-		[NSException raise:@"Asset had no audio" format:@"line %d: File '%@.mp3' had no audio tracks", mElement.line, mFilename];
+		[NSException raise:@"Asset had no audio" format:@"line %d: File '%@.mp3' had no audio tracks", 0/*mElement.line*/, mFilename];
 	}
 	
 	// make an audio mix for this track (actually an AVAudioMixInputParameters

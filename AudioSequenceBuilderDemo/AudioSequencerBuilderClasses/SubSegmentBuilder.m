@@ -1,5 +1,5 @@
 //
-//  AudioSegmentBuilder2.m
+//  SubSegmentBuilder.m
 //  iTwelve
 //
 //  Created by David Mojdehi on 8/2/11.
@@ -7,9 +7,9 @@
 //
 
 #import "SubSegmentBuilder.h"
-#import "AudioSegmentBuilder2Container.h"
-#import "AudioSegmentBuilder2Sound.h"
-#import "AudioSegmentBuilder2Silence.h"
+#import "SubSegmentBuilderContainer.h"
+#import "SubSegmentBuilderSound.h"
+#import "SubSegmentBuilderSilence.h"
 #import "DDXMLElement.h"
 #import "AudioSequenceBuilder.h"
 
@@ -20,7 +20,7 @@
 @synthesize element = mElement;
 @synthesize parent = mParent;
 
--(id)initWithElem:(DDXMLElement*)elem inContainer:(AudioSegmentBuilder2Container*)parent
+-(id)initWithElem:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent
 {
     self = [super init];
     if (self) {
@@ -54,7 +54,7 @@
 	[super dealloc];
 }
 
-+(SubSegmentBuilder*)makeAudioSegmentBuilderFor:(DDXMLElement*)elem inContainer:(AudioSegmentBuilder2Container*)parent
++(SubSegmentBuilder*)makeAudioSegmentBuilderFor:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent
 {
 	// makes (but not process) the builder
 	SubSegmentBuilder *segBuilder = nil;
@@ -66,7 +66,7 @@
 	   [nodeName compare:@"root"] == 0 ||
 	   [nodeName compare:@"par"] == 0 )
 	{
-		AudioSegmentBuilder2Container *segBuilderAsContainer = [[[AudioSegmentBuilder2Container alloc]initWithElem:elem inContainer:parent ]autorelease];
+		SubSegmentBuilderContainer *segBuilderAsContainer = [[[SubSegmentBuilderContainer alloc]initWithElem:elem inContainer:parent ]autorelease];
 		segBuilder = segBuilderAsContainer;
 		
 		//=============================================
@@ -123,7 +123,7 @@
 		// make it dependent on the relevant parent elements
 		// (either the previous sibling's position & duration, or the parents duration)
 		
-		segBuilder = [[[AudioSegmentBuilder2Sound alloc]initWithElem:elem inContainer:parent]autorelease];
+		segBuilder = [[[SubSegmentBuilderSound alloc]initWithElem:elem inContainer:parent]autorelease];
 		
 	}
 	else if([nodeName compare:@"padding"] == 0)
@@ -132,9 +132,9 @@
 		DDXMLNode *durationAttr = [elem attributeForName:@"duration"];
 		DDXMLNode  *ratioAttr = [elem attributeForName:@"ratio"];
 		if(!durationAttr && !ratioAttr)
-			[NSException raise:@"<padding> must have a duration!" format:@"line %d: Use either the 'duration' or 'ratio' attributes", elem.line];
+			[NSException raise:@"<padding> must have a duration!" format:@"line %d: Use either the 'duration' or 'ratio' attributes", 0 /*elem.line*];
 		if(durationAttr && ratioAttr)
-			[NSException raise:@"<padding> cannot have two durations!" format:@"line %d: Use either 'duration' or 'ratio', but not both", elem.line];
+			[NSException raise:@"<padding> cannot have two durations!" format:@"line %d: Use either 'duration' or 'ratio', but not both", 0 /*elem.line*/];
 		
 		//NSString *ratioStr = [ratioAttr stringValue];
 		NSString *durationStr = [durationAttr stringValue];
@@ -147,17 +147,17 @@
 			//	  - we also use that parent as the place we store the total ratio counter
 			//
 			// we will *block* on it's completion, then use *it* to derive our position info
-			segBuilder = [[[AudioSegmentBuilder2RelativeSilence alloc] initWithElem:elem inContainer:parent] autorelease];
+			segBuilder = [[[SubSegmentBuilderRelativeSilence alloc] initWithElem:elem inContainer:parent] autorelease];
 		}
 		else if(durationStr)
 		{
-			segBuilder = [[[AudioSegmentBuilder2FixedSilence alloc] initWithElem:elem inContainer:parent]autorelease];
+			segBuilder = [[[SubSegmentBuilderFixedSilence alloc] initWithElem:elem inContainer:parent]autorelease];
 		}
 	}
 	else
 	{
 		// any other type is ignored
-		NSLog(@"AudioSegmentBuilder: ignoring unknown element %@, line %d", elem.name, elem.line);
+		NSLog(@"AudioSegmentBuilder: ignoring unknown element %@, line %d", elem.name, 0/*elem.line*/);
 		segBuilder = nil;
 	}
 	

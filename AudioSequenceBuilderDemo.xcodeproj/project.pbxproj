@@ -53,6 +53,18 @@
 		87C41322141949070009800C /* SubSegmentBuilderContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4131B141949070009800C /* SubSegmentBuilderContainer.m */; };
 		87C41323141949070009800C /* SubSegmentBuilderSilence.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4131D141949070009800C /* SubSegmentBuilderSilence.m */; };
 		87C41324141949070009800C /* SubSegmentBuilderSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4131F141949070009800C /* SubSegmentBuilderSound.m */; };
+		87C4138E14194E6E0009800C /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135614194E6E0009800C /* DDXMLElementAdditions.m */; };
+		87C4138F14194E6E0009800C /* NSString+DDXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135914194E6E0009800C /* NSString+DDXML.m */; };
+		87C4139014194E6E0009800C /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135C14194E6E0009800C /* DDXMLDocument.m */; };
+		87C4139114194E6E0009800C /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135E14194E6E0009800C /* DDXMLElement.m */; };
+		87C4139214194E6E0009800C /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4136014194E6E0009800C /* DDXMLNode.m */; };
+		87C4139E14194EE30009800C /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C4139C14194EDB0009800C /* libxml2.dylib */; };
+		87C413A9141950610009800C /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C4139C14194EDB0009800C /* libxml2.dylib */; };
+		87C413B11419518C0009800C /* NSObject+BlockObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C413B01419518C0009800C /* NSObject+BlockObservation.m */; };
+		87C413B3141952720009800C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B2141952720009800C /* CoreMedia.framework */; };
+		87C413B51419527D0009800C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B41419527D0009800C /* AVFoundation.framework */; };
+		87C413B6141952800009800C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B41419527D0009800C /* AVFoundation.framework */; };
+		87C413B7141952840009800C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B2141952720009800C /* CoreMedia.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +134,23 @@
 		87C4131D141949070009800C /* SubSegmentBuilderSilence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubSegmentBuilderSilence.m; sourceTree = "<group>"; };
 		87C4131E141949070009800C /* SubSegmentBuilderSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubSegmentBuilderSound.h; sourceTree = "<group>"; };
 		87C4131F141949070009800C /* SubSegmentBuilderSound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubSegmentBuilderSound.m; sourceTree = "<group>"; };
+		87C4135514194E6E0009800C /* DDXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElementAdditions.h; sourceTree = "<group>"; };
+		87C4135614194E6E0009800C /* DDXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElementAdditions.m; sourceTree = "<group>"; };
+		87C4135814194E6E0009800C /* NSString+DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DDXML.h"; sourceTree = "<group>"; };
+		87C4135914194E6E0009800C /* NSString+DDXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DDXML.m"; sourceTree = "<group>"; };
+		87C4135A14194E6E0009800C /* DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXML.h; sourceTree = "<group>"; };
+		87C4135B14194E6E0009800C /* DDXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLDocument.h; sourceTree = "<group>"; };
+		87C4135C14194E6E0009800C /* DDXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLDocument.m; sourceTree = "<group>"; };
+		87C4135D14194E6E0009800C /* DDXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElement.h; sourceTree = "<group>"; };
+		87C4135E14194E6E0009800C /* DDXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElement.m; sourceTree = "<group>"; };
+		87C4135F14194E6E0009800C /* DDXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLNode.h; sourceTree = "<group>"; };
+		87C4136014194E6E0009800C /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
+		87C4136214194E6E0009800C /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
+		87C4139C14194EDB0009800C /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		87C413AF1419518C0009800C /* NSObject+BlockObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+BlockObservation.h"; sourceTree = "<group>"; };
+		87C413B01419518C0009800C /* NSObject+BlockObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+BlockObservation.m"; sourceTree = "<group>"; };
+		87C413B2141952720009800C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		87C413B41419527D0009800C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +161,9 @@
 				8701B6BD141946D000FB5E95 /* UIKit.framework in Frameworks */,
 				8701B6BF141946D000FB5E95 /* Foundation.framework in Frameworks */,
 				8701B6C1141946D000FB5E95 /* CoreGraphics.framework in Frameworks */,
+				87C413A9141950610009800C /* libxml2.dylib in Frameworks */,
+				87C413B6141952800009800C /* AVFoundation.framework in Frameworks */,
+				87C413B7141952840009800C /* CoreMedia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,10 +171,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87C413B51419527D0009800C /* AVFoundation.framework in Frameworks */,
+				87C413B3141952720009800C /* CoreMedia.framework in Frameworks */,
 				8701B6DE141946D100FB5E95 /* SenTestingKit.framework in Frameworks */,
 				8701B6DF141946D100FB5E95 /* UIKit.framework in Frameworks */,
 				8701B6E0141946D100FB5E95 /* Foundation.framework in Frameworks */,
 				8701B6E1141946D100FB5E95 /* CoreGraphics.framework in Frameworks */,
+				87C4139E14194EE30009800C /* libxml2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +206,9 @@
 		8701B6BB141946D000FB5E95 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				87C413B41419527D0009800C /* AVFoundation.framework */,
+				87C413B2141952720009800C /* CoreMedia.framework */,
+				87C4139C14194EDB0009800C /* libxml2.dylib */,
 				8701B6BC141946D000FB5E95 /* UIKit.framework */,
 				8701B6BE141946D000FB5E95 /* Foundation.framework */,
 				8701B6C0141946D000FB5E95 /* CoreGraphics.framework */,
@@ -182,6 +220,7 @@
 		8701B6C2141946D000FB5E95 /* AudioSequenceBuilderDemo */ = {
 			isa = PBXGroup;
 			children = (
+				87C4132914194E5D0009800C /* 3rdParty */,
 				8701B6CB141946D000FB5E95 /* AudioSequenceBuilderDemoAppDelegate.h */,
 				8701B6CC141946D000FB5E95 /* AudioSequenceBuilderDemoAppDelegate.m */,
 				8701B6CE141946D000FB5E95 /* MainWindow.xib */,
@@ -283,6 +322,77 @@
 			path = AudioSequencerBuilderClasses;
 			sourceTree = "<group>";
 		};
+		87C4132914194E5D0009800C /* 3rdParty */ = {
+			isa = PBXGroup;
+			children = (
+				87C413AE1419518C0009800C /* NSObject+BlockObservation */,
+				87C4132B14194E6E0009800C /* KissXml */,
+			);
+			name = 3rdParty;
+			sourceTree = "<group>";
+		};
+		87C4132B14194E6E0009800C /* KissXml */ = {
+			isa = PBXGroup;
+			children = (
+				87C4135314194E6E0009800C /* KissXML */,
+			);
+			name = KissXml;
+			path = 3rdParty/KissXml;
+			sourceTree = "<group>";
+		};
+		87C4135314194E6E0009800C /* KissXML */ = {
+			isa = PBXGroup;
+			children = (
+				87C4135414194E6E0009800C /* Additions */,
+				87C4135714194E6E0009800C /* Categories */,
+				87C4135A14194E6E0009800C /* DDXML.h */,
+				87C4135B14194E6E0009800C /* DDXMLDocument.h */,
+				87C4135C14194E6E0009800C /* DDXMLDocument.m */,
+				87C4135D14194E6E0009800C /* DDXMLElement.h */,
+				87C4135E14194E6E0009800C /* DDXMLElement.m */,
+				87C4135F14194E6E0009800C /* DDXMLNode.h */,
+				87C4136014194E6E0009800C /* DDXMLNode.m */,
+				87C4136114194E6E0009800C /* Private */,
+			);
+			path = KissXML;
+			sourceTree = "<group>";
+		};
+		87C4135414194E6E0009800C /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				87C4135514194E6E0009800C /* DDXMLElementAdditions.h */,
+				87C4135614194E6E0009800C /* DDXMLElementAdditions.m */,
+			);
+			path = Additions;
+			sourceTree = "<group>";
+		};
+		87C4135714194E6E0009800C /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				87C4135814194E6E0009800C /* NSString+DDXML.h */,
+				87C4135914194E6E0009800C /* NSString+DDXML.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		87C4136114194E6E0009800C /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				87C4136214194E6E0009800C /* DDXMLPrivate.h */,
+			);
+			path = Private;
+			sourceTree = "<group>";
+		};
+		87C413AE1419518C0009800C /* NSObject+BlockObservation */ = {
+			isa = PBXGroup;
+			children = (
+				87C413AF1419518C0009800C /* NSObject+BlockObservation.h */,
+				87C413B01419518C0009800C /* NSObject+BlockObservation.m */,
+			);
+			name = "NSObject+BlockObservation";
+			path = "3rdParty/NSObject+BlockObservation";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -336,6 +446,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				English,
 			);
 			mainGroup = 8701B6AD141946D000FB5E95;
 			productRefGroup = 8701B6B9141946D000FB5E95 /* Products */;
@@ -424,6 +535,12 @@
 				87C41322141949070009800C /* SubSegmentBuilderContainer.m in Sources */,
 				87C41323141949070009800C /* SubSegmentBuilderSilence.m in Sources */,
 				87C41324141949070009800C /* SubSegmentBuilderSound.m in Sources */,
+				87C4138E14194E6E0009800C /* DDXMLElementAdditions.m in Sources */,
+				87C4138F14194E6E0009800C /* NSString+DDXML.m in Sources */,
+				87C4139014194E6E0009800C /* DDXMLDocument.m in Sources */,
+				87C4139114194E6E0009800C /* DDXMLElement.m in Sources */,
+				87C4139214194E6E0009800C /* DDXMLNode.m in Sources */,
+				87C413B11419518C0009800C /* NSObject+BlockObservation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,6 +654,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Prefix.pch";
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -548,6 +666,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Prefix.pch";
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -564,6 +683,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Prefix.pch";
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemoTests/AudioSequenceBuilderDemoTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -581,6 +701,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Prefix.pch";
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemoTests/AudioSequenceBuilderDemoTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
