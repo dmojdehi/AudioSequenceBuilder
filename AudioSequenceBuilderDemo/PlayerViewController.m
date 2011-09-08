@@ -198,6 +198,21 @@
 	
 }
 
+- (IBAction)positionSliderValueChanged:(id)sender
+{
+	[self updateTimeOnLabel:mTimerDebug duration:mTimeSlider.value];
+	
+}
+
+- (IBAction)positionSliderValueChangeFinished:(id)sender
+{
+	if(mPlayer)
+	{
+		CMTime newPos = CMTimeMakeWithSeconds(mTimeSlider.value, 44100);
+		[mPlayer seekToTime:newPos];
+	}
+	
+}
 
 
 
