@@ -17,7 +17,7 @@
 
 @interface PlayerViewController (Private)
 -(void)updateTimeOnLabel: (UILabel*) label duration:(NSTimeInterval) timeUntilDone;
--(void)buildPlayerAsync:(NSString *)xmlFilename duration:(double)durationInSeconds loopCount:(int)loopCount removeTags:(NSString*)removeTags;
+-(void)buildPlayerAsync:(NSString *)xmlFilename;
 
 @end
 
@@ -132,7 +132,6 @@
 	
 	double durationInSeconds = 30.0;
 	NSString *removeTags = nil;
-	int loopCount = 0;
 
 //	MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //	hud.labelText = @"Loading...";
@@ -142,7 +141,7 @@
 		
 		@try 
 		{
-			[self buildPlayerAsync:xmlFile duration:durationInSeconds loopCount:loopCount removeTags:removeTags];
+			[self buildPlayerAsync:xmlFile];
 			
 		}
 		@catch (NSException *exception) 
@@ -249,32 +248,18 @@
 
 
 
--(void)buildPlayerAsync:(NSString *)xmlFilename duration:(double)durationInSeconds loopCount:(int)loopCount removeTags:(NSString*)removeTags
+-(void)buildPlayerAsync:(NSString *)xmlFilename
 {
+	
+	// load the builder
+	AudioSequenceBuilder *builder = [[[AudioSequenceBuilder alloc] init ] autorelease];
+	
 	// load the xml
 	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:xmlFilename withExtension:@"xml"];
+	[builder loadDocument:docUrl];	
 	
-	
-	// test a simple xml
-	//	AudioBuilder *builder = [[AudioBuilder alloc] init ];
-	//	[builder loadFromXmlString:@"<root><seq duration=\"10:00.0\"><sound file=\"Intro-r\" loopToFitParent=\"simple\" /></seq></root>"];
-	
-	
-	
-	// load the document
-	AudioSequenceBuilder *builder = [[[AudioSequenceBuilder alloc] init ] autorelease];
-	[builder loadDocument:docUrl];
-	// find the 'duration' element
-	
-	//NSArray *navigationTimes = builder.navigationTimes;
-		
-	NSError *error = nil;
-	// these xpath queries search for "any element with attribute 'id' whose value is ...
-	NSArray *setTheFiles = [builder.document nodesForXPath:@"//*[@id='setMyFile']" error:&error];
-	NSArray *setTheDurations = [builder.document nodesForXPath:@"//*[@id='setMyDuration']" error:&error];
-	NSArray *backgroundMusicTracks = [builder.document nodesForXPath:@"//*[@id='backgroundMusic']" error:&error];
-	NSArray *middleSection = [builder.document nodesForXPath:@"//*[@id='middleSection']" error:&error];
 #if DEBUG
+	NSError *error = nil;
 	NSArray *sounds = [builder.document nodesForXPath:@"//sound" error:&error];
 	
 	for(DDXMLElement *sound in sounds)
@@ -300,70 +285,13 @@
 		
 	}
 #endif
-	NSArray *removeElems = nil;
-	if(removeTags)
-	{
-		NSString *removeTagsQuery = [NSString stringWithFormat:@"//*[@id='%@']",removeTags ];
-		removeElems = [builder.document nodesForXPath:removeTagsQuery error:&error];
-	}
 	
-	NSString *durationAsString = [NSString stringWithFormat:@"%.4f", durationInSeconds];
-	for(DDXMLElement *setTheDuration in setTheDurations)
-	{
-		DDXMLNode *durationAttr = [setTheDuration attributeForName:@"duration"];
-		if(durationAttr)
-		{
-			[durationAttr setStringValue:durationAsString];
-		}
-	}
 	
-	for(DDXMLElement *removeElem in removeElems)
-	{
-		DDXMLElement *parent = (DDXMLElement *)removeElem.parent;
-		
-		[parent removeChildAtIndex:removeElem.index];
-	}
-	
-	// if background music is disabled, remove that element
-#if 0
-	NSString *chosenBackgroundFilename = [[SoundSequencerAppDelegate instance].settings.selectedBackgroundMusic objectForKey:@"filename"];
-	for(DDXMLElement *backgroundTrack in backgroundMusicTracks)
-	{
-		if([SoundSequencerAppDelegate instance].settings.backgroundMusicEnabled )
-		{
-			DDXMLNode *fileAttribue = [backgroundTrack attributeForName:@"file"];
-			if(!fileAttribue)
-			{
-				[NSException raise:@"No file attribute for sound" format:@"" ];
-			}
-			[fileAttribue setStringValue:chosenBackgroundFilename];
-			
-			
-			DDXMLNode *volumeAttribue = [backgroundTrack attributeForName:@"volume"];
-			if(!volumeAttribue)
-			{
-				[NSException raise:@"No volume attribute for sound" format:@"" ];
-			}
-			double settingValue = [SoundSequencerAppDelegate instance].settings.backgroundMusicVolume;
-			double existingVolume = [[volumeAttribue stringValue] doubleValue];
-			double newVolume = settingValue * existingVolume;
-			NSString *newVolumeString = [NSString stringWithFormat:@"%.2f",newVolume];
-			[volumeAttribue setStringValue:newVolumeString];
-			
-			//
-		}
-		else
-		{
-			DDXMLElement *parent = (DDXMLElement *)backgroundTrack.parent;
-			
-			[parent removeChildAtIndex:backgroundTrack.index];
-		}
-	}
-#endif
-	
-	// once it's ready to play, push the controller
+	// build the player
 	self.player = [builder buildPlayer];
 	self.builder = builder;
+	
+	// once it's ready, begin playback
 	[self.player addObserverForKeyPath:@"status" task:^(id obj, NSDictionary *change) {
 		
 		AVPlayerStatus playerStatus = self.player.status;
@@ -406,7 +334,6 @@
 		}
 		else
 		{
-			//int z= 0;
 		}
 	}];
 	
