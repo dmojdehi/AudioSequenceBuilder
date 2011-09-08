@@ -43,7 +43,7 @@ And in your Objective-C code:
 
 
 
-In addition to serial-playback, sounds can play in the background with the PAR container.  Here's the example above with an added background music track:
+In addition to serial playback, sounds can play in the background with the PAR container.  Here's the example above with an added background music track:
 
 	<par>
 		<!-- the main sound sequence -->
@@ -60,13 +60,36 @@ In addition to serial-playback, sounds can play in the background with the PAR c
 
 
 
+Add To Your Project
+===============
+
+The easiest way is to simply drag these core files into your XCode project:
+
+	AudioSequenceBuilder.h
+	AudioSequenceBuilder.m
+	SubSegmentBuilder.h
+	SubSegmentBuilder.m
+	SubSegmentBuilderContainer.h
+	SubSegmentBuilderContainer.m
+	SubSegmentBuilderSilence.h
+	SubSegmentBuilderSilence.m
+	SubSegmentBuilderSound.h
+	SubSegmentBuilderSound.m
+
+You'll also need to add:
+
+*	the [KissXML project](http://code.google.com/p/kissxml/)
+*	Apple's AVFoundation & CoreMedia libraries
+
+
+
 Experimental Features
 ===============
 
 Fixed duration
 --------------
 
-Specifies that a segment should last an overall given duration, and fit the sounds within it as appropriate.
+Specifies that a segment should last a given overall duration, fitting the sounds within appropriately.
 
 Here's a 1 min, 25 sec clip.  Note that the car-crash sound will be delayed to play at the end:
 
@@ -78,6 +101,8 @@ Here's a 1 min, 25 sec clip.  Note that the car-crash sound will be delayed to p
 	</seq>
 
 **Note:** 'duration' is treated as a minimum duration.  If the segment extends past the duration it isn't truncated.  This behavior may change in future versions.
+
+**Note:** multiple `<padding>` sections work as you'd expect; you can have many of them and they add up then divide their `ratio` padding evenly.
 
 Loop-to-fit
 -----------
