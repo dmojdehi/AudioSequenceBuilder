@@ -43,7 +43,7 @@ And in your Objective-C code:
 
 
 
-In addition to serial playback, sounds can play in the background with the PAR container.  Here's the example above with an added background music track:
+In addition to serial playback, sounds can play in the background with the `<par>` container.  Here's the example above with an added background music track:
 
 	<par>
 		<!-- the main sound sequence -->
@@ -79,7 +79,9 @@ The easiest way is to simply drag these core files into your XCode project:
 You'll also need to add:
 
 *	the [KissXML project](http://code.google.com/p/kissxml/)
-*	Apple's AVFoundation & CoreMedia libraries
+	*	I use the KissXML parser because you can modify the XML after you load it, which is very handy
+	*	You can use another parser, but you'll have to adjust the classnames in a few places.
+*	Apple's AVFoundation & CoreMedia frameworks
 
 
 
