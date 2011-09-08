@@ -1,0 +1,3 @@
+[submodule "AudioSequenceBuilderDemo/3rdParty/KissXml"]
+	path = AudioSequenceBuilderDemo/3rdParty/KissXml
+	url = https://code.google.com/p/kissxml/
