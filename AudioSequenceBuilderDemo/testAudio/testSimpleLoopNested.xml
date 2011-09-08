@@ -1,0 +1,20 @@
+<root>
+	<!-- Here, a deeply nested child must access the fixed duration of an ancestor -->
+	<par duration="5:00.0000" >
+		<seq>
+			<seq>
+				<seq>
+					<sound file="toneOneMinute" loopToFitParent="loopSimple" />
+				</seq>
+			</seq>
+		</seq>
+	</par>
+	<test>
+		<totalSegments count="5" />
+		<segment file="toneOneMinute" targetTime="0.0" targetDuration="1:00.0" />
+		<segment file="toneOneMinute" targetTime="1:00.0" targetDuration="1:00.0" />
+		<segment file="toneOneMinute" targetTime="2:00.0" targetDuration="1:00.0" />
+		<segment file="toneOneMinute" targetTime="3:00.0" targetDuration="1:00.0" />
+		<segment file="toneOneMinute" targetTime="4:00.0" targetDuration="1:00.0" />
+	</test>
+</root>

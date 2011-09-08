@@ -1,0 +1,14 @@
+<root>
+	<par>
+		<!-- the main sound sequence -->
+		<seq >
+			<sound file="car-start" />
+			<sound file="car-vroom" />
+			<sound file="car-crash" />
+		</seq>
+		
+		
+		<!-- the background sound ('navigable = false' means don't ff / rew to it)-->
+		<sound file="tension" navigable="false" />
+	</par>
+</root>

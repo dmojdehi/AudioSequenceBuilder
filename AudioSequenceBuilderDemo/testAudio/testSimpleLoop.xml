@@ -1,0 +1,15 @@
+<root>
+	<seq duration="10:00.0">
+		<sound file="BG_Reflective_Peace" loopToFitParent="loopSimple" />
+	</seq>
+	<test>
+		<totalSegments count="7" />
+		<segment file="BG_Reflective_Peace" targetTime="0.0" targetDuration="90.96" />
+		<segment file="BG_Reflective_Peace" targetTime="90.96" targetDuration="90.96" />
+		<segment file="BG_Reflective_Peace" targetTime="181.92" targetDuration="90.96" />
+		<segment file="BG_Reflective_Peace" targetTime="272.88" targetDuration="90.96" />
+		<segment file="BG_Reflective_Peace" targetTime="363.83" targetDuration="90.96" />
+		<segment file="BG_Reflective_Peace" targetTime="454.79" targetDuration="90.96" />
+		<segment file="BG_Reflective_Peace" targetTime="545.75" targetDuration="90.96" />
+	</test>
+</root>

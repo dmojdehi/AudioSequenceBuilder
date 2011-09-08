@@ -1,0 +1,7 @@
+<root>
+	<seq >
+		<sound file="car-start" />
+		<sound file="car-vroom" />
+		<sound file="car-crash" />
+	</seq>
+</root>

@@ -127,7 +127,40 @@
 		self.navigationItem.titleView = customHeaderView;
 	}
 	
+	NSString *xmlFile = @"CarSequenceWithBackground";
+	//NSString *xmlFile = @"CarSequence";
+	
+	double durationInSeconds = 30.0;
+	NSString *removeTags = nil;
+	int loopCount = 0;
 
+//	MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//	hud.labelText = @"Loading...";
+
+	// make the player
+	NSBlockOperation *buildIt = [NSBlockOperation blockOperationWithBlock:^(void) {
+		
+		@try 
+		{
+			[self buildPlayerAsync:xmlFile duration:durationInSeconds loopCount:loopCount removeTags:removeTags];
+			
+		}
+		@catch (NSException *exception) 
+		{
+			
+		}
+		@finally 
+		{
+			// dismiss the progress bar
+//			dispatch_async(dispatch_get_main_queue(), ^(void) {
+//				[MBProgressHUD hideHUDForView:self.view animated:YES];
+//			});
+		}
+		
+	}];
+	
+	[[NSOperationQueue mainQueue] addOperation:buildIt];
+	
 	
 }
 
@@ -218,20 +251,8 @@
 
 -(void)buildPlayerAsync:(NSString *)xmlFilename duration:(double)durationInSeconds loopCount:(int)loopCount removeTags:(NSString*)removeTags
 {
-	NSString *loopOptionIntAsString = [NSString stringWithFormat:@"%d", loopCount];
-	
-	
 	// load the xml
 	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:xmlFilename withExtension:@"xml"];
-	//NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"drumjourney" withExtension:@"xml"];
-	//	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"simplest" withExtension:@"xml"];
-	//NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"simpleLoopTest" withExtension:@"xml"];
-	//NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"i12-medium" withExtension:@"xml"];
-	//	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"i12" withExtension:@"xml"];
-	//	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"simple" withExtension:@"xml"];
-	//	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"bug" withExtension:@"xml"];
-	//	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"dontsweat" withExtension:@"xml"];
-	//	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"tta" withExtension:@"xml"];
 	
 	
 	// test a simple xml
@@ -246,11 +267,7 @@
 	// find the 'duration' element
 	
 	//NSArray *navigationTimes = builder.navigationTimes;
-	
-	// get the current passage & time
-	NSString *selectedPassageFilename = @"drumjourney2.xml";
-	//NSString *selectedPassageFilename = [[SoundSequencerAppDelegate instance].settings.selectedPassage objectForKey:@"filename"];
-	
+		
 	NSError *error = nil;
 	// these xpath queries search for "any element with attribute 'id' whose value is ...
 	NSArray *setTheFiles = [builder.document nodesForXPath:@"//*[@id='setMyFile']" error:&error];
@@ -289,13 +306,6 @@
 		NSString *removeTagsQuery = [NSString stringWithFormat:@"//*[@id='%@']",removeTags ];
 		removeElems = [builder.document nodesForXPath:removeTagsQuery error:&error];
 	}
-	for(DDXMLElement *setTheFile in setTheFiles)
-	{
-		DDXMLNode *fileAttr = [setTheFile attributeForName:@"file"];
-		if(fileAttr)
-			[fileAttr setStringValue:selectedPassageFilename];
-		
-	}
 	
 	NSString *durationAsString = [NSString stringWithFormat:@"%.4f", durationInSeconds];
 	for(DDXMLElement *setTheDuration in setTheDurations)
@@ -304,14 +314,6 @@
 		if(durationAttr)
 		{
 			[durationAttr setStringValue:durationAsString];
-		}
-	}
-	for(DDXMLElement *section in middleSection)
-	{
-		DDXMLNode *durationAttr = [section attributeForName:@"playCount"];
-		if(durationAttr && loopOptionIntAsString)
-		{
-			[durationAttr setStringValue:loopOptionIntAsString];
 		}
 	}
 	
