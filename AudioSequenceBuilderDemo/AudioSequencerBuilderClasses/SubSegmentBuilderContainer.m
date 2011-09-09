@@ -1,6 +1,6 @@
 //
 //  SubSegmentBuilderContainer.m
-//  iTwelve
+//  AudioSequenceBuilderDemo
 //
 //  Created by David Mojdehi on 8/3/11.
 //  Copyright 2011 Mindful Bear Apps. All rights reserved.
@@ -141,21 +141,35 @@ const double kDoesntHaveFixedDuration = -1.0;
 	// rewind to our beginning.
 	mNextWritePos  = beginTimeInParent;
 	
-	for(SubSegmentBuilder *child in mChildBuilders)
-	{
+	// recurse into the children
+	// (par's orchestrate which track to use here)
+	[mChildBuilders enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		SubSegmentBuilder *child = (SubSegmentBuilder *)obj;
+		
 		AVMutableCompositionTrack *compositionTrackToUse = compositionTrack;
 		if(mIsParallel)
 		{
 			mNextWritePos = beginTimeInParent;
 			
 			// par's require a separate track for each child
-			compositionTrackToUse = [builder.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+			if(idx < [builder.trackPool count])
+			{
+				compositionTrackToUse = [builder.trackPool objectAtIndex:idx];
+			}
+			else
+			{
+				// we get here if the track pool doesn't have enough tracks!
+				// so add one
+				compositionTrackToUse = [builder.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+				[builder.trackPool addObject:compositionTrackToUse];
+			}
 			
 			//mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
 			
 		}
 		[child passTwoApplyMedia:builder intoTrack:compositionTrackToUse];
-	}
+		
+	}];
 	
 	// update our parent to our last write pos
 	// (parent par's will clobber this, of course)

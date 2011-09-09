@@ -1,6 +1,6 @@
 //
 //  SubSegmentBuilderSound.h
-//  iTwelve
+//  AudioSequenceBuilderDemo
 //
 //  Created by David Mojdehi on 8/3/11.
 //  Copyright 2011 Mindful Bear Apps. All rights reserved.
@@ -36,6 +36,5 @@ typedef enum
 	LoopLogic *mLoopLogic;
 }
 
-+(NSURL *)findAudioFile:(NSArray *)filename;
-
++(NSURL *)findAudioFile:(NSString *)filename;
 @end

@@ -1,6 +1,6 @@
 //
 //  SubSegmentBuilderSound.m
-//  iTwelve
+//  AudioSequenceBuilderDemo
 //
 //  Created by David Mojdehi on 8/3/11.
 //  Copyright 2011 Mindful Bear Apps. All rights reserved.
@@ -18,7 +18,7 @@
 	double mInitialWritePos;
 	double mNextWritePos;
 	int mWriteCount;
-
+	
 	SubSegmentBuilderContainer *mParentNotRetained;
 }
 @property (nonatomic,readonly) LoopToFitParent loopMode;
@@ -34,11 +34,15 @@
 @implementation LoopLogic
 @synthesize loopMode = mLoopToFitParent;
 
+static NSMutableDictionary *sAudioTracksByName = nil;
+
 -(id)initWithElem:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer *)parent
 {
 	self = [super init];
 	if(self)
 	{
+		if(!sAudioTracksByName)
+			sAudioTracksByName= [[NSMutableDictionary alloc]init ];
 		mWriteCount = 0;
 		mParentNotRetained = parent;
 		// loopToFitParent possible values:
@@ -69,16 +73,16 @@
 			
 			
 		}
-
+		
 	}
 	return self;
 }
 -(void)begin
 {
 	mInitialWritePos = mParentNotRetained.nextWritePos;
-//	while((mLoopToFitParent != kLoopNone) &&
-//		  localNextWritePos < finalWonkyWritePos);	
-
+	//	while((mLoopToFitParent != kLoopNone) &&
+	//		  localNextWritePos < finalWonkyWritePos);	
+	
 }
 
 // if we're fitting to the end, the first time we usually start well past the markin
@@ -91,7 +95,7 @@
 		double amountOfMediaNeeded = fmod(desiredDuration, duration);			
 		initialOffsetFromMarkIn = duration - amountOfMediaNeeded;			
 	}
-
+	
 	return initialOffsetFromMarkIn;
 }
 
@@ -119,13 +123,12 @@
 		if(mWriteCount == 0)
 			more = true;
 	}
-
+	
 	return more;
 }
 @end
 
 @interface SubSegmentBuilderSound(Internal)
-+(NSURL *)findAudioFile:(NSArray *)filename;
 +(NSURL *)findAudioFileOfNames:(NSArray *)filenames;
 @end
 
@@ -166,6 +169,34 @@
 		
 		// if we have both mark in & mark out, with **sample*** offsets
 		// try to load the pre-cut files instead (to save time)
+#if 1
+		NSURL *assetUrl = nil;
+		// see if a pre-cut file is there
+		if(markInNode && markOutNode)
+		{
+			if([[markInNode stringValue] rangeOfString:@"#"].length > 0)
+			{
+				NSString *markInStr = [[[markInNode stringValue] stringByReplacingOccurrencesOfString:@"#" withString:@""]stringByReplacingOccurrencesOfString:@"," withString:@""];
+				NSString *markOutStr = [[[markOutNode stringValue] stringByReplacingOccurrencesOfString:@"#" withString:@""]stringByReplacingOccurrencesOfString:@"," withString:@""];
+				int markInSample = [markInStr intValue];
+				int markOutSample = [markOutStr intValue];
+				
+				NSString *filenameOfTrimmedMedia = [NSString stringWithFormat: @"%@-%d-%d", mFilename, markInSample, markOutSample];
+				assetUrl = [SubSegmentBuilderSound findAudioFile:filenameOfTrimmedMedia];
+				if(assetUrl)
+				{
+					// we got one!
+					// be sure to use this whole file, not the cut points
+					markInNode = nil;
+					markOutNode = nil;
+				}
+				
+		    }
+		}
+		if(!assetUrl)
+			assetUrl = [SubSegmentBuilderSound findAudioFile:mFilename];
+		
+#else
 		NSMutableArray *filenamesToLookFor = [[[NSMutableArray alloc]init ]autorelease];
 		if(markInNode && markOutNode)
 		{
@@ -187,15 +218,30 @@
 		
 		// find the file & load it
 		NSURL *assetUrl = [SubSegmentBuilderSound findAudioFileOfNames:filenamesToLookFor];
+#endif
+		
 		if(!assetUrl)
 			[NSException raise:@"Unable to find file" format:@"line %d: File '%@', wasn't found (looked for both .mp3 and .m4a)", 0/*elem.line*/, mFilename];
 		
-		mAsset = [AVURLAsset URLAssetWithURL:assetUrl options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],
-															   AVURLAssetPreferPreciseDurationAndTimingKey, nil] ];
-		//AVURLAsset *asset = [AVURLAsset URLAssetWithURL:assetUrl options:nil];
+		
+		
+		// have we already loaded this asset?  just reuse it, please!
+		mAsset = [sAudioTracksByName objectForKey:[assetUrl absoluteString]];
+		if(mAsset)
+		{
+			NSLog(@"... loaded asset tracks from cache!");
+		}
+		else
+		{
+			NSLog(@"... loading asset tracks (not from cache)");
+			mAsset = [AVURLAsset URLAssetWithURL:assetUrl options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],
+																   AVURLAssetPreferPreciseDurationAndTimingKey, nil] ];
+			[sAudioTracksByName setObject:mAsset forKey:[assetUrl absoluteString]];
+			//mAsset = [AVURLAsset URLAssetWithURL:assetUrl options:nil];
+		}
 		if(!mAsset)
 		{
-			[NSException raise:@"Unable to open file" format:@"line %d: File '%@.mp3' couldn't be opened", 0 /*elem.line*/, mFilename];
+			[NSException raise:@"Unable to open file" format:@"line %d: File '%@.mp3' couldn't be opened", 0/*elem.line*/, mFilename];
 		}
 		[mAsset retain];
 		
@@ -234,7 +280,7 @@
 			BOOL playable = mAsset.isPlayable;
 			NSLog(@"... loaded file '%@', readable:%d, composable:%d, playable:%d", filename, readable, composable, playable);
 #endif
-						
+			
 			
 			mMarkOut = CMTimeGetSeconds(dur);
 		}
@@ -258,17 +304,20 @@
 
 -(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoTrack:(AVMutableCompositionTrack*)compositionTrack
 {	
-	NSLog(@"2nd pass: Adding sound %@ (at pos: %f)",mFilename, mParent.nextWritePos);
+#if DEBUG 
+	int trackID  = compositionTrack.trackID;
+	NSLog(@"2nd pass: Adding sound: '%@' to track id:%d (at pos: %f)",mFilename, trackID, mParent.nextWritePos);
+#endif
 	
-//	if([mFilename compare:@"BG_Reflective_Peace"] == 0)
-//	{
-//		int z = 0;
-//	}
+	//	if([mFilename compare:@"BG_Reflective_Peace"] == 0)
+	//	{
+	//		int z = 0;
+	//	}
 	AVAssetTrack *sourceAudioTrack = [[mAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
 	if(!sourceAudioTrack)
 	{
 		NSLog(@"...  FAILED to add sound.  There we no audio tracks in the asset");
-		[NSException raise:@"Asset had no audio" format:@"line %d: File '%@.mp3' had no audio tracks", 0/*mElement.line*/, mFilename];
+		[NSException raise:@"Asset had no audio" format:@"line %d: File '%@.mp3' had no audio tracks", 0 /*mElement.line*/, mFilename];
 	}
 	
 	// make an audio mix for this track (actually an AVAudioMixInputParameters
@@ -298,7 +347,7 @@
 	double markInOutTimeRangeDurationInSeconds = mMarkOut - mMarkIn;
 	double initialOffsetFromMarkIn = [mLoopLogic computeStartOffsetForFitToEnd:markInOutTimeRangeDurationInSeconds];			
 	CMTime markInToUse = CMTimeAdd(markIn, CMTimeMakeWithSeconds(initialOffsetFromMarkIn,44100 ) );
-
+	
 	
 	// loop as long as the next write pos is less than the final pos
 	while([mLoopLogic more])
@@ -319,9 +368,9 @@
 		if(builder && mIsNavigable)
 		{
 			[builder addNavigationTime:mParent.nextWritePos];
-			 
+			
 		}
-
+		
 		BOOL success = [compositionTrack insertTimeRange:sourceMarkInOutTimeRange
 												 ofTrack:sourceAudioTrack
 												  atTime:insertionPos
@@ -353,26 +402,21 @@
 		
 	}
 }
-+(NSURL *)findAudioFile:(NSArray *)filename
++(NSURL *)findAudioFile:(NSString *)filename
 {
 	return [SubSegmentBuilderSound findAudioFileOfNames:[NSArray arrayWithObject:filename]];
 	
 }
 
-+(NSURL *)findAudioFileOfNames:(NSArray *)filenames
++(NSURL *)findAudioFileOfNames:(NSArray *)filenames optionalVoiceSuffix:(NSString*)voiceSuffix
 {
-	NSArray *extensions = [NSArray arrayWithObjects:@"aif", @"m4a", @"mp3", nil ] ;
-
+	NSArray *extensions = [NSArray arrayWithObjects:@"aif", @"aiff", @"m4a", @"mp3", nil ] ;
+	
 	
 	for(NSString *filename in filenames)
 	{
-		// if the filename needs expansion, rename it now
-//		if([filename hasSuffix:@"-voice"])
-//		{
-//			NSString *newSuffix = [iTwelveAppDelegate instance].settings.narratorFileSuffix; 
-//			filename = [filename stringByReplacingOccurrencesOfString:@"-voice" withString:newSuffix];
-//		}
-		   
+
+		
 		for(NSString *extension in extensions)
 		{
 			NSURL *assetUrl = [[NSBundle mainBundle] URLForResource:filename withExtension:extension];
@@ -382,9 +426,8 @@
 			}		
 		}
 	}
-
+	
 	return nil;
 	
 }
 @end
-

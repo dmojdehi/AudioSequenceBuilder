@@ -1,6 +1,6 @@
 //
 //  SubSegmentBuilderSilence.m
-//  iTwelve
+//  AudioSequenceBuilderDemo
 //
 //  Created by David Mojdehi on 8/3/11.
 //  Copyright 2011 Mindful Bear Apps. All rights reserved.

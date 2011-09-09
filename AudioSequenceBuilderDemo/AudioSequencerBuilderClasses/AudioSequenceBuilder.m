@@ -1,6 +1,6 @@
 //
 //  AudioBuilder2.m
-//  iTwelve
+//  AudioSequenceBuilderDemo
 //
 //  Created by David Mojdehi on 8/2/11.
 //  Copyright 2011 Mindful Bear Apps. All rights reserved.
@@ -18,6 +18,7 @@
 @synthesize audioMixParameters = mAudioMixParameters;
 @synthesize document = mDocument;
 @synthesize navigationTimes = mNavigationTimes;
+@synthesize trackPool = mTrackPool;
 
 - (id)init
 {
@@ -29,6 +30,7 @@
 		mAudioMixParameters = [[NSMutableArray array] retain];
 		mElementDictionary = [[NSMutableDictionary alloc]init];
 		mNavigationTimes = [[NSMutableArray alloc]init];
+		mTrackPool = [[NSMutableArray alloc]init];
 //		mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
     }
     
@@ -41,6 +43,7 @@
 	[mAudioMixParameters release];
 	[mElementDictionary release];
 	[mNavigationTimes release];
+	[mTrackPool release];
 //	[mCompositionTrack release];
 	[super dealloc];
 }
@@ -192,49 +195,53 @@
 {
 	double timeToReturn = 0.0;
 	
-	
 	if(timecode == nil)
 	{
 		
 	}
-	else if( [timecode hasPrefix:@"#"])
-		//else if( [timecode rangeOfString:@":"].length == 0  && [timecode rangeOfString:@"."].length == 0)
+	else 
 	{
-		// we ge here if it's a single integer #
-		// so assume it's a fixed-sample number
-		NSString *timecodeAfterPoundsign = [timecode substringFromIndex:1];
+		// remove all commas!
+		timecode = [timecode stringByReplacingOccurrencesOfString:@"," withString:@""];
 		
-		int sampleNumber = [timecodeAfterPoundsign intValue];
-		timeToReturn = ((double) sampleNumber) / 44100.0;
-		
-	}
-	else
-	{
-		// parse out all the minutes & seconds from the string
-		// example input: "5:13.409"  (5 min 13 sec 409 msec)
-		NSScanner *scanner = [NSScanner scannerWithString:timecode];
-		
-		while(![scanner isAtEnd])
+		if( [timecode hasPrefix:@"#"])
+			//else if( [timecode rangeOfString:@":"].length == 0  && [timecode rangeOfString:@"."].length == 0)
 		{
-			double fieldVal = 0.0;
-			if([scanner scanDouble:&fieldVal])
+			// we ge here if it's a single integer #
+			// so assume it's a fixed-sample number
+			NSString *timecodeAfterPoundsign = [timecode substringFromIndex:1];
+			
+			int sampleNumber = [timecodeAfterPoundsign intValue];
+			timeToReturn = ((double) sampleNumber) / 44100.0;
+			
+		}
+		else
+		{
+			// parse out all the minutes & seconds from the string
+			// example input: "5:13.409"  (5 min 13 sec 409 msec)
+			NSScanner *scanner = [NSScanner scannerWithString:timecode];
+			
+			while(![scanner isAtEnd])
 			{
-				// got a new value
-				timeToReturn = timeToReturn * 60.0 + fieldVal;
-				if(![scanner isAtEnd])
+				double fieldVal = 0.0;
+				if([scanner scanDouble:&fieldVal])
 				{
-					[scanner scanString:@":" intoString:nil];
+					// got a new value
+					timeToReturn = timeToReturn * 60.0 + fieldVal;
+					if(![scanner isAtEnd])
+					{
+						[scanner scanString:@":" intoString:nil];
+					}
 				}
-			}
-			else
-			{
-				// we get here if it couldn't parse the value
-				// so we're done!
-				break;
+				else
+				{
+					// we get here if it couldn't parse the value
+					// so we're done!
+					break;
+				}
 			}
 		}
 	}
-	
 	return timeToReturn;
 	
 }

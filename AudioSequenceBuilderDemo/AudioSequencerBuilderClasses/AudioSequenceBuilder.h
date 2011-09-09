@@ -1,6 +1,6 @@
 //
 //  AudioBuilder2.h
-//  iTwelve
+//  AudioSequenceBuilderDemo
 //
 //  Created by David Mojdehi on 8/2/11.
 //  Copyright 2011 Mindful Bear Apps. All rights reserved.
@@ -23,6 +23,7 @@
 	NSMutableDictionary	*mElementDictionary;
 	NSMutableArray *mNavigationTimes;
 
+	NSMutableArray *mTrackPool;
 }
 
 @property (nonatomic, readonly) AVMutableComposition *composition;
@@ -30,6 +31,7 @@
 @property (nonatomic, readonly) NSMutableArray *audioMixParameters;
 @property (nonatomic, readonly) DDXMLDocument *document;
 @property (nonatomic, readonly) NSArray *navigationTimes;
+@property (nonatomic, readonly) NSMutableArray *trackPool;
 
 -(void)loadDocument:(NSURL*)documentToLoad;
 -(void)loadFromXmlString:(NSString*)xmlString;
