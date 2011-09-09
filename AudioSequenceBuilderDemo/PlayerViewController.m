@@ -272,8 +272,8 @@
 		{
 			
 			NSString *filename = [fileAttr stringValue];
-			NSString *markInStr = [[markInAttr stringValue] stringByReplacingOccurrencesOfString:@"#" withString:@""];
-			NSString *markOutStr = [[markOutAttr stringValue] stringByReplacingOccurrencesOfString:@"#" withString:@""];
+			NSString *markInStr = [[[markInAttr stringValue] stringByReplacingOccurrencesOfString:@"#" withString:@""] stringByReplacingOccurrencesOfString:@"," withString:@""];
+			NSString *markOutStr = [[[markOutAttr stringValue] stringByReplacingOccurrencesOfString:@"#" withString:@""] stringByReplacingOccurrencesOfString:@"," withString:@""];
 			int markIn = [markInStr intValue];
 			int markOut = [markOutStr intValue];
 			int sampleCount = markOut - markIn;
