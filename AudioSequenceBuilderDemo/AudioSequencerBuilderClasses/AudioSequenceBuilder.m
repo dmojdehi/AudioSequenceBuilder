@@ -13,9 +13,6 @@
 
 @implementation AudioSequenceBuilder
 @synthesize composition = mComposition;
-//@synthesize compositionTrack =mCompositionTrack;
-//@synthesize contextStack = mAudioContextStack;
-@synthesize audioMixParameters = mAudioMixParameters;
 @synthesize document = mDocument;
 @synthesize navigationTimes = mNavigationTimes;
 @synthesize trackPool = mTrackPool;
@@ -25,12 +22,11 @@
     self = [super init];
     if (self) {
         // Initialization code here.
-//		mAudioContextStack = [[NSMutableArray alloc] init ];
 		mComposition = [[AVMutableComposition composition] retain];
-		mAudioMixParameters = [[NSMutableArray array] retain];
 		mElementDictionary = [[NSMutableDictionary alloc]init];
 		mNavigationTimes = [[NSMutableArray alloc]init];
 		mTrackPool = [[NSMutableArray alloc]init];
+		mAudioEnvelopesForTracks = [[NSMutableDictionary alloc]init];
 //		mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
     }
     
@@ -40,10 +36,10 @@
 -(void)dealloc
 {
 	[mComposition release];
-	[mAudioMixParameters release];
 	[mElementDictionary release];
 	[mNavigationTimes release];
 	[mTrackPool release];
+	[mAudioEnvelopesForTracks release];
 //	[mCompositionTrack release];
 	[super dealloc];
 }
@@ -64,6 +60,20 @@
 	
 }
 
+-(AVMutableAudioMixInputParameters*)audioEnvelopeForTrack:(AVMutableCompositionTrack*)compositionTrack
+{
+	int trackId = compositionTrack.trackID;
+	AVMutableAudioMixInputParameters *envelope = [mAudioEnvelopesForTracks objectForKey:[NSNumber numberWithInt:trackId]];
+	if(!envelope)
+	{
+		// make a new audio envelope for this track
+		envelope = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:compositionTrack];
+		// remember it
+		[mAudioEnvelopesForTracks setObject:envelope forKey:[NSNumber numberWithInt:trackId]];
+	}
+	return envelope;
+}
+
 -(AVPlayer*)buildPlayer
 {
 	AVPlayer *audioPlayer = nil;
@@ -82,13 +92,13 @@
 	AVMutableCompositionTrack *compositionTrack = [mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
 	[segBuilder passTwoApplyMedia:self intoTrack:compositionTrack ];
 	
-	
-	
-	// set the overall audio mix
+	// get the audio envelopes, and apply them all
 	AVMutableAudioMix *theAudioMix = [AVMutableAudioMix audioMix];
-	theAudioMix.inputParameters = mAudioMixParameters;
+	NSArray *audioMixParameters = [mAudioEnvelopesForTracks allValues];
+	theAudioMix.inputParameters = audioMixParameters;	
 	
-	// You can make an immutable snapshot of a mutable composition for playback or inspection
+	
+	// make an immutable snapshot of a mutable composition for playback or inspection
 	AVComposition *playerItemForSnapshottedComposition = [[mComposition copy] autorelease];
 	AVPlayerItem *playerItem = [[[AVPlayerItem alloc] initWithAsset:playerItemForSnapshottedComposition] autorelease];
 	playerItem.audioMix = theAudioMix;

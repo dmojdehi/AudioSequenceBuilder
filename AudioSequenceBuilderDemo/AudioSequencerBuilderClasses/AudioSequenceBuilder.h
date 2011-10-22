@@ -13,28 +13,28 @@
 @class DDXMLElement;
 @class AVMutableComposition;
 @class AVMutableCompositionTrack;
+@class AVMutableAudioMixInputParameters;
 
 @interface AudioSequenceBuilder : NSObject
 {
-//	NSMutableArray *mAudioContextStack;
 	DDXMLDocument *mDocument;
 	AVMutableComposition *mComposition;
-	NSMutableArray *mAudioMixParameters;
 	NSMutableDictionary	*mElementDictionary;
 	NSMutableArray *mNavigationTimes;
 
+	NSMutableDictionary *mAudioEnvelopesForTracks;
 	NSMutableArray *mTrackPool;
 }
 
 @property (nonatomic, readonly) AVMutableComposition *composition;
-//@property (nonatomic, readonly) NSMutableArray *contextStack;
-@property (nonatomic, readonly) NSMutableArray *audioMixParameters;
 @property (nonatomic, readonly) DDXMLDocument *document;
 @property (nonatomic, readonly) NSArray *navigationTimes;
 @property (nonatomic, readonly) NSMutableArray *trackPool;
 
 -(void)loadDocument:(NSURL*)documentToLoad;
 -(void)loadFromXmlString:(NSString*)xmlString;
+-(AVMutableAudioMixInputParameters*)audioEnvelopeForTrack:(AVMutableCompositionTrack*)compositionTrack;
+
 
 -(AVPlayer*)buildPlayer;
 

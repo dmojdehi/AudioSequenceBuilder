@@ -1,5 +1,5 @@
 <root>
-	<!-- As above, but there's are fixed durations to remove -->
+	<!-- Here, an inner sound must loop to fit a fixed duration, subtracting prior & *subsequent* fixed audio -->
 	<par duration="3:00.0000" >
 		<seq>
 			<sound file="toneVarying10Seconds" />
@@ -14,12 +14,11 @@
 	
 		
 	<test>
-		<!-- count should be 4, but we don't truncate audio loops yet -->
 		<totalSegments count="5" />
 		<segment file="toneVarying10Seconds" targetTime="0:00.0" targetDuration="0:10.0" />
 		<segment file="toneOneMinute"        targetTime="0:10.0" targetDuration="1:00.0" />
 		<segment file="toneOneMinute"        targetTime="1:10.0" targetDuration="1:00.0" />
-		<segment file="toneOneMinute"        targetTime="2:10.0" targetDuration="1:00.0" />
-		<segment file="toneVarying10Seconds" targetTime="3:10.0" targetDuration="0:10.0" />
+		<segment file="toneOneMinute"        targetTime="2:10.0" targetDuration="0:40.0" /> <!-- this loop is truncated to 40 seconds! -->
+		<segment file="toneVarying10Seconds" targetTime="2:50.0" targetDuration="0:10.0" />
 	</test>
 </root>

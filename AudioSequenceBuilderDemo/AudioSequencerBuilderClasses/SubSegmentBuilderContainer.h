@@ -33,5 +33,6 @@ extern const double kDoesntHaveFixedDuration;
 @property (nonatomic, readonly) bool isParallel;
 
 -(double)durationToFill;
+-(bool)hasAnyFixedDurations;
 
 @end

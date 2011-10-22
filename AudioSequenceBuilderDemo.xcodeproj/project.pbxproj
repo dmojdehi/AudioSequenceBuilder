@@ -74,6 +74,7 @@
 		87C413B51419527D0009800C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B41419527D0009800C /* AVFoundation.framework */; };
 		87C413B6141952800009800C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B41419527D0009800C /* AVFoundation.framework */; };
 		87C413B7141952840009800C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B2141952720009800C /* CoreMedia.framework */; };
+		87F123911452969400491F62 /* testSimpleSequence.xml in Resources */ = {isa = PBXBuildFile; fileRef = 87F123901452969400491F62 /* testSimpleSequence.xml */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -168,6 +169,7 @@
 		87C413B01419518C0009800C /* NSObject+BlockObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+BlockObservation.m"; sourceTree = "<group>"; };
 		87C413B2141952720009800C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		87C413B41419527D0009800C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		87F123901452969400491F62 /* testSimpleSequence.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testSimpleSequence.xml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +329,7 @@
 		87C4130E141948CF0009800C /* testAudio */ = {
 			isa = PBXGroup;
 			children = (
+				87F123901452969400491F62 /* testSimpleSequence.xml */,
 				874B01E814196B2F00B514FB /* testNestedDurations.xml */,
 				874B01E914196B2F00B514FB /* testNestedDurations2.xml */,
 				874B01EA14196B2F00B514FB /* testSimpleLoop.xml */,
@@ -534,6 +537,7 @@
 				874B01EF14196B2F00B514FB /* testSimpleLoopNested.xml in Resources */,
 				874B01F114196BAF00B514FB /* CarSequence.xml in Resources */,
 				874B01F314196CAF00B514FB /* CarSequenceWithBackground.xml in Resources */,
+				87F123911452969400491F62 /* testSimpleSequence.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

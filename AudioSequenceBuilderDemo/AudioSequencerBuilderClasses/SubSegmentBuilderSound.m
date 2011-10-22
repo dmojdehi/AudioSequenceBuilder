@@ -12,6 +12,8 @@
 #import "DDXMLElement.h"
 #import <AVFoundation/AVFoundation.h>
 
+const double kFadeOutDuration = 2.0;
+
 @interface LoopLogic : NSObject
 {
 	LoopToFitParent mLoopToFitParent;
@@ -29,6 +31,7 @@
 -(void)wroteSegment:(NSString*)filename dur:(double)duration;
 
 -(bool)more;
+-(double)moreRemaining;
 
 @end
 @implementation LoopLogic
@@ -105,8 +108,55 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 	mWriteCount++;
 }
 
+double kUnlimitedRemaining = 999999.9;
+
+// returns the duration remaining
+-(double)moreRemaining
+{
+	double remaining = 0.0;
+	double parentDurationToFill = [mParentNotRetained durationToFill];
+	if(mLoopToFitParent != kLoopNone)
+	{
+		double nextWritePos = mParentNotRetained.nextWritePos;
+		remaining = mInitialWritePos + parentDurationToFill - nextWritePos;
+		if(remaining < 0.0)
+			remaining = 0.0;
+	}
+	else
+	{
+		// non-looping elements should write only once
+		if(mWriteCount == 0)
+		{
+			if(mParentNotRetained && [mParentNotRetained hasAnyFixedDurations])
+				remaining = parentDurationToFill;
+			else
+				remaining = kUnlimitedRemaining;
+		}
+		else
+		{
+			// we're non-looping, and have already written
+			remaining = 0;
+		}
+	}
+	
+	return remaining;
+	
+}
+
 -(bool)more
 {
+#if 1
+	if([self moreRemaining] > 0.0)
+		return true;
+	else
+		return false;
+//	if(mParentNotRetained &&
+//	   [mParentNotRetained hasAnyFixedDurations] &&
+//	   [self moreRemaining] > 0.0 )
+//	   return true;
+//   else
+//	   return false;
+#else
 	bool more= false;
 	if(mLoopToFitParent != kLoopNone)
 	{
@@ -125,6 +175,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 	}
 	
 	return more;
+#endif
 }
 @end
 
@@ -278,7 +329,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 			BOOL readable = mAsset.isReadable;
 			BOOL composable = mAsset.isComposable;
 			BOOL playable = mAsset.isPlayable;
-			NSLog(@"... loaded file '%@', readable:%d, composable:%d, playable:%d", filename, readable, composable, playable);
+			NSLog(@"... loaded file '%@', readable:%d, composable:%d, playable:%d, duration: %.4f", filename, readable, composable, playable, CMTimeGetSeconds(dur));
 #endif
 			
 			
@@ -355,13 +406,33 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 		CMTime insertionPos = CMTimeMakeWithSeconds(mParent.nextWritePos, 44100);
 		CMTime markOutToUse = markOut;
 		
-		// TODO don't write past the end time
-		
+		// apply at the audio ramp for this clip
+
+		AVMutableAudioMixInputParameters *audioEnvelope = [builder audioEnvelopeForTrack:compositionTrack];
+		//AVMutableAudioMixInputParameters *audioEnvelope = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:compositionTrack];
+		[audioEnvelope setVolume:mVolume atTime:insertionPos];
+
 		// make the timerange in the source to use
 		// (when fitting-to-end, the first time in the loop we may be offset)
 		CMTimeRange sourceMarkInOutTimeRange = CMTimeRangeFromTimeToTime(markInToUse, markOutToUse);
 		// (any subsequent loops will use the whole markIn-markOut
 		markInToUse = markIn;
+		
+		// TODO don't write past the end time
+		// limit the source range by the amount remaining in the output!
+		double moreRemaining = [mLoopLogic moreRemaining];
+		if(CMTimeGetSeconds(sourceMarkInOutTimeRange.duration) > moreRemaining )
+		{
+			// we get here if a looping track needs to be truncated to fit a parent
+			sourceMarkInOutTimeRange.duration = CMTimeMakeWithSeconds(moreRemaining, 44100);
+			
+			// also, fade out over the last second or so
+			CMTime fadeOutBeginTime = CMTimeAdd( insertionPos, CMTimeMakeWithSeconds(moreRemaining - kFadeOutDuration, 44100) );
+			CMTimeRange fadeOutRange = CMTimeRangeMake(fadeOutBeginTime, CMTimeMakeWithSeconds(kFadeOutDuration, 44100));
+			[audioEnvelope setVolumeRampFromStartVolume:mVolume toEndVolume:0.0 timeRange:fadeOutRange];
+
+			//[audioMix setVolumeRampFromStartVolume:0.0 toEndVolume:volume timeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(5.0, 44100))];
+		}
 		
 		
 		// if this sound is to be used in next/prev navigation, add it now
@@ -390,16 +461,10 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 			// accumulates time into parent's nextWritePos
 			[mLoopLogic wroteSegment:mFilename dur:amountJustAdded];
 			
-			if(mVolume != 1.0)
-			{
-				AVMutableAudioMixInputParameters *audioMix = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:compositionTrack];
-				[audioMix setVolume:mVolume atTime:insertionPos];
-				//[audioMix setVolumeRampFromStartVolume:0.0 toEndVolume:volume timeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(5.0, 44100))];
-				[builder.audioMixParameters addObject:audioMix];
-			}
 			NSLog(@"...  added sound (new pos: %f)", mParent.nextWritePos);
 		}
-		
+	
+
 	}
 }
 +(NSURL *)findAudioFile:(NSString *)filename
@@ -408,7 +473,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 	
 }
 
-+(NSURL *)findAudioFileOfNames:(NSArray *)filenames optionalVoiceSuffix:(NSString*)voiceSuffix
++(NSURL *)findAudioFileOfNames:(NSArray *)filenames
 {
 	NSArray *extensions = [NSArray arrayWithObjects:@"aif", @"aiff", @"m4a", @"mp3", nil ] ;
 	

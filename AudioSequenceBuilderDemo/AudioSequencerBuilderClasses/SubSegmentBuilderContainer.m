@@ -102,6 +102,19 @@ const double kDoesntHaveFixedDuration = -1.0;
 	}
 }
 
+-(bool)hasAnyFixedDurations
+{
+	bool hasAny = false;
+	if(mOptionalFixedDuration != kDoesntHaveFixedDuration)
+		hasAny = true;
+	else if(mParent)
+	{
+		// we're not fixed, perhaps a parent is?
+		hasAny = [mParent hasAnyFixedDurations];	
+	}
+	return hasAny;
+}
+
 // handles the calculation of remaining pad amount
 // 
 -(double)durationToFill
