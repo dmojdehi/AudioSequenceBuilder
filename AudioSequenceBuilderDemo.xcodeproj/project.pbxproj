@@ -21,6 +21,8 @@
 		8701B6E9141946D100FB5E95 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8701B6E7141946D100FB5E95 /* InfoPlist.strings */; };
 		8701B6EB141946D100FB5E95 /* AudioSequenceBuilderDemoTests.h in Resources */ = {isa = PBXBuildFile; fileRef = 8701B6EA141946D100FB5E95 /* AudioSequenceBuilderDemoTests.h */; };
 		8701B6ED141946D100FB5E95 /* AudioSequenceBuilderDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8701B6EC141946D100FB5E95 /* AudioSequenceBuilderDemoTests.m */; };
+		871EB1CD1454BE2E00F4D002 /* testTracksComplex1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 871EB1CB1454BE2E00F4D002 /* testTracksComplex1.xml */; };
+		871EB1CE1454BE2E00F4D002 /* testTracksSimple.xml in Resources */ = {isa = PBXBuildFile; fileRef = 871EB1CC1454BE2E00F4D002 /* testTracksSimple.xml */; };
 		874B01E214196B0500B514FB /* car-crash.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 874B01DD14196B0500B514FB /* car-crash.m4a */; };
 		874B01E314196B0500B514FB /* car-door-slam.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 874B01DE14196B0500B514FB /* car-door-slam.m4a */; };
 		874B01E414196B0500B514FB /* car-start.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 874B01DF14196B0500B514FB /* car-start.m4a */; };
@@ -105,6 +107,8 @@
 		8701B6E8141946D100FB5E95 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8701B6EA141946D100FB5E95 /* AudioSequenceBuilderDemoTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioSequenceBuilderDemoTests.h; sourceTree = "<group>"; };
 		8701B6EC141946D100FB5E95 /* AudioSequenceBuilderDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioSequenceBuilderDemoTests.m; sourceTree = "<group>"; };
+		871EB1CB1454BE2E00F4D002 /* testTracksComplex1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testTracksComplex1.xml; sourceTree = "<group>"; };
+		871EB1CC1454BE2E00F4D002 /* testTracksSimple.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testTracksSimple.xml; sourceTree = "<group>"; };
 		874B01DD14196B0500B514FB /* car-crash.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "car-crash.m4a"; sourceTree = "<group>"; };
 		874B01DE14196B0500B514FB /* car-door-slam.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "car-door-slam.m4a"; sourceTree = "<group>"; };
 		874B01DF14196B0500B514FB /* car-start.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "car-start.m4a"; sourceTree = "<group>"; };
@@ -329,6 +333,8 @@
 		87C4130E141948CF0009800C /* testAudio */ = {
 			isa = PBXGroup;
 			children = (
+				871EB1CB1454BE2E00F4D002 /* testTracksComplex1.xml */,
+				871EB1CC1454BE2E00F4D002 /* testTracksSimple.xml */,
 				87F123901452969400491F62 /* testSimpleSequence.xml */,
 				874B01E814196B2F00B514FB /* testNestedDurations.xml */,
 				874B01E914196B2F00B514FB /* testNestedDurations2.xml */,
@@ -538,6 +544,8 @@
 				874B01F114196BAF00B514FB /* CarSequence.xml in Resources */,
 				874B01F314196CAF00B514FB /* CarSequenceWithBackground.xml in Resources */,
 				87F123911452969400491F62 /* testSimpleSequence.xml in Resources */,
+				871EB1CD1454BE2E00F4D002 /* testTracksComplex1.xml in Resources */,
+				871EB1CE1454BE2E00F4D002 /* testTracksSimple.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

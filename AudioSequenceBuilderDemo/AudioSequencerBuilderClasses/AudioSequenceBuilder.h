@@ -14,22 +14,33 @@
 @class AVMutableComposition;
 @class AVMutableCompositionTrack;
 @class AVMutableAudioMixInputParameters;
+@class TrackStack;
+
+#define qUseTrackStack		1
 
 @interface AudioSequenceBuilder : NSObject
 {
 	DDXMLDocument *mDocument;
-	AVMutableComposition *mComposition;
 	NSMutableDictionary	*mElementDictionary;
 	NSMutableArray *mNavigationTimes;
 
 	NSMutableDictionary *mAudioEnvelopesForTracks;
+#if qUseTrackStack
+	TrackStack *mTrackStack;
+#else
+	AVMutableComposition *mComposition;
 	NSMutableArray *mTrackPool;
+#endif
 }
 
-@property (nonatomic, readonly) AVMutableComposition *composition;
 @property (nonatomic, readonly) DDXMLDocument *document;
 @property (nonatomic, readonly) NSArray *navigationTimes;
+#if qUseTrackStack
+@property (nonatomic, readonly) TrackStack *trackStack;
+#else
+@property (nonatomic, readonly) AVMutableComposition *composition;
 @property (nonatomic, readonly) NSMutableArray *trackPool;
+#endif
 
 -(void)loadDocument:(NSURL*)documentToLoad;
 -(void)loadFromXmlString:(NSString*)xmlString;
@@ -43,4 +54,17 @@
 -(bool)parseDoubleAttr:(NSString*)attributeName fromElem:(DDXMLElement*)elem  result:(out double*)attrValue;
 +(double)parseTimecode:(NSString*)timecode;
 
+@end
+
+
+@interface TrackStack : NSObject {
+@private
+	AVMutableComposition *mComposition;
+
+    NSMutableArray *mTracks;
+	int mCurrentTrackIndex;
+}
+@property (nonatomic, readonly) AVMutableCompositionTrack* currentTrack;
+@property (nonatomic, assign) int currentTrackIndex;
+@property (nonatomic, readonly) AVMutableComposition *composition;
 @end

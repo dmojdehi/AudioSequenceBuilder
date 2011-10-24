@@ -70,13 +70,20 @@
 -(void)testAudioSimpleLooping
 {
 	
-	
+#if 1
+	NSArray *xmlFilesToTest = [NSArray arrayWithObjects:
+							   @"testTracksComplex1",
+							   nil];
+#else
 	NSArray *xmlFilesToTest = [NSArray arrayWithObjects:@"testSimpleLoop",
 							   @"testSimpleLoopNested",
 							   //@"testNestedDurations",
 							   @"testNestedDurations2",
 							   @"testSimpleSequence",
+							   @"testTracksSimple",
+							   @"testTracksComplex1",
 							   nil];
+#endif
 	for(NSString *filename in xmlFilesToTest)
 	{
 		[self performTestingForXml:filename];
@@ -169,6 +176,14 @@
 			int expectedCount = [[[testCase attributeForName:@"count"] stringValue] intValue];
 			if(expectedCount != totalSegments)
 				STFail(@"Test: <totalSegments> failed.  Expected count was %d, the actual count was %d", expectedCount, totalSegments);
+			
+		}
+		else if([testCase.name compare:@"totalTracks" options:NSCaseInsensitiveSearch]  == 0)
+		{
+			// get the amount to compare
+			int expectedCount = [[[testCase attributeForName:@"count"] stringValue] intValue];
+			if(expectedCount != [tracks count])
+				STFail(@"Test: <totalTracks> failed.  Expected count was %d, the actual count was %d", expectedCount, [tracks count]);
 			
 		}
 		else if([testCase.name compare:@"segment" options:NSCaseInsensitiveSearch]  == 0)

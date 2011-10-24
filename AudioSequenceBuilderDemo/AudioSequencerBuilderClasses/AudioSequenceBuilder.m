@@ -12,20 +12,27 @@
 #import "SubSegmentBuilder.h"
 
 @implementation AudioSequenceBuilder
-@synthesize composition = mComposition;
 @synthesize document = mDocument;
 @synthesize navigationTimes = mNavigationTimes;
+#if qUseTrackStack
+@synthesize trackStack = mTrackStack;
+#else
+@synthesize composition = mComposition;
 @synthesize trackPool = mTrackPool;
-
+#endif
 - (id)init
 {
     self = [super init];
     if (self) {
         // Initialization code here.
+#if qUseTrackStack
+		mTrackStack = [[TrackStack alloc]init];
+#else
 		mComposition = [[AVMutableComposition composition] retain];
+		mTrackPool = [[NSMutableArray alloc]init];
+#endif
 		mElementDictionary = [[NSMutableDictionary alloc]init];
 		mNavigationTimes = [[NSMutableArray alloc]init];
-		mTrackPool = [[NSMutableArray alloc]init];
 		mAudioEnvelopesForTracks = [[NSMutableDictionary alloc]init];
 //		mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
     }
@@ -35,10 +42,14 @@
 
 -(void)dealloc
 {
+#if qUseTrackStack
+	[mTrackStack release];
+#else
 	[mComposition release];
+	[mTrackPool release];
+#endif
 	[mElementDictionary release];
 	[mNavigationTimes release];
-	[mTrackPool release];
 	[mAudioEnvelopesForTracks release];
 //	[mCompositionTrack release];
 	[super dealloc];
@@ -89,8 +100,12 @@
 	[segBuilder passOneResolvePadding];
 	
 	// final pass: write the media out!
+#if qUseTrackStack
+	[segBuilder passTwoApplyMedia:self intoTrack:nil ];
+#else
 	AVMutableCompositionTrack *compositionTrack = [mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
 	[segBuilder passTwoApplyMedia:self intoTrack:compositionTrack ];
+#endif
 	
 	// get the audio envelopes, and apply them all
 	AVMutableAudioMix *theAudioMix = [AVMutableAudioMix audioMix];
@@ -99,7 +114,11 @@
 	
 	
 	// make an immutable snapshot of a mutable composition for playback or inspection
+#if qUseTrackStack
+	AVComposition *playerItemForSnapshottedComposition = [[mTrackStack.composition copy] autorelease];
+#else
 	AVComposition *playerItemForSnapshottedComposition = [[mComposition copy] autorelease];
+#endif
 	AVPlayerItem *playerItem = [[[AVPlayerItem alloc] initWithAsset:playerItemForSnapshottedComposition] autorelease];
 	playerItem.audioMix = theAudioMix;
 	audioPlayer = [AVPlayer playerWithPlayerItem:playerItem];
@@ -257,4 +276,40 @@
 }
 
 
+@end
+
+
+
+@implementation TrackStack
+@synthesize composition = mComposition;
+@synthesize currentTrackIndex = mCurrentTrackIndex;
+-(id)init
+{
+	self=[super init];
+	if(self)
+	{
+		mComposition = [[AVMutableComposition composition] retain];
+		mCurrentTrackIndex = 0;
+		mTracks =[[NSMutableArray alloc]init];
+	}
+	return self;
+}
+-(void)dealloc
+{
+	[mComposition release];
+	[mTracks release];
+	[super dealloc];
+}
+-(AVMutableCompositionTrack*) currentTrack
+{
+	// get (or make) the current track
+	if(mCurrentTrackIndex >= [mTracks count])
+	{
+		AVMutableCompositionTrack *newtrack = [mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+		[mTracks addObject:newtrack];
+
+	}
+	
+	return [mTracks objectAtIndex:mCurrentTrackIndex];
+}
 @end

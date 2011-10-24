@@ -144,7 +144,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 	return remaining;
 }
 
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoTrack:(AVMutableCompositionTrack*)compositionTrack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoTrack:(AVMutableCompositionTrack*)compositionTrackIgnored
 {	
 	// at the beginning of this pass we remember our start pos
 	double beginTimeInParent = 0.0;
@@ -159,11 +159,14 @@ const double kDoesntHaveFixedDuration = -1.0;
 	[mChildBuilders enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		SubSegmentBuilder *child = (SubSegmentBuilder *)obj;
 		
-		AVMutableCompositionTrack *compositionTrackToUse = compositionTrack;
+		AVMutableCompositionTrack *compositionTrackToUse = builder.trackStack.currentTrack ;
+		int savedTrackIndex = builder.trackStack.currentTrackIndex;
 		if(mIsParallel)
 		{
 			mNextWritePos = beginTimeInParent;
 			
+#if qUseTrackStack
+#else
 			// par's require a separate track for each child
 			if(idx < [builder.trackPool count])
 			{
@@ -176,11 +179,25 @@ const double kDoesntHaveFixedDuration = -1.0;
 				compositionTrackToUse = [builder.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
 				[builder.trackPool addObject:compositionTrackToUse];
 			}
+#endif
 			
 			//mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
 			
 		}
 		[child passTwoApplyMedia:builder intoTrack:compositionTrackToUse];
+		
+#if qUseTrackStack
+		if(mIsParallel)
+		{
+			// advance (but don't yet allocate) the track stack
+			builder.trackStack.currentTrackIndex += 1;
+		}
+		else
+		{
+			//seq's restore the track index after child processing
+			builder.trackStack.currentTrackIndex = savedTrackIndex;
+		}
+#endif
 		
 	}];
 	
