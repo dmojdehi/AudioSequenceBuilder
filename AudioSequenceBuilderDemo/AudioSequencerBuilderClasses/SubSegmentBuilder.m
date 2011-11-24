@@ -123,7 +123,7 @@
 		DDXMLNode *durationAttr = [elem attributeForName:@"duration"];
 		DDXMLNode  *ratioAttr = [elem attributeForName:@"ratio"];
 		if(!durationAttr && !ratioAttr)
-			[NSException raise:@"<padding> must have a duration!" format:@"line %d: Use either the 'duration' or 'ratio' attributes", 0 /*elem.line*];
+			[NSException raise:@"<padding> must have a duration!" format:@"line %d: Use either the 'duration' or 'ratio' attributes", 0 /*elem.line*/];
 		if(durationAttr && ratioAttr)
 			[NSException raise:@"<padding> cannot have two durations!" format:@"line %d: Use either 'duration' or 'ratio', but not both", 0 /*elem.line*/];
 		

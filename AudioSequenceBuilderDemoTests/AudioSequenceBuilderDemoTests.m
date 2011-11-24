@@ -117,7 +117,7 @@
 	dispatch_group_enter(waitGroup);
 	[player addKVOBlockForKeyPath:@"status" options:0 handler:^(NSString *keyPath, id object, NSDictionary *change) {
 		
-		AVPlayerStatus playerStatus = player.status;
+		//AVPlayerStatus playerStatus = player.status;
 		
 		
 		// manually indiate that work has finished
@@ -148,7 +148,7 @@
 	int totalSegments = 0;
 	for(AVCompositionTrack *track in tracks)
 	{
-		CMTimeRange timeRange = track.timeRange;
+		//CMTimeRange timeRange = track.timeRange;
 		NSArray *segments = track.segments;
 		for(AVCompositionTrackSegment *segment in segments)
 		{
@@ -203,8 +203,8 @@
 					
 					// if 
 					CMTimeMapping timeMapping = segment.timeMapping;
-					double timeSrcStart = CMTimeGetSeconds(timeMapping.source.start);
-					double timeSrcDuration = CMTimeGetSeconds(timeMapping.source.duration);
+					//double timeSrcStart = CMTimeGetSeconds(timeMapping.source.start);
+					//double timeSrcDuration = CMTimeGetSeconds(timeMapping.source.duration);
 					double timeTargetStart = CMTimeGetSeconds(timeMapping.target.start);
 					double timeTargetDuration = CMTimeGetSeconds(timeMapping.target.duration);
 					if(ISCLOSETO(timeTargetStart,targetTime))

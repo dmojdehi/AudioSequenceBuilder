@@ -32,6 +32,16 @@
 
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) AudioSequenceBuilder *builder;
+@property (nonatomic, strong) UISlider *timeSlider;
+@property (nonatomic, strong) UILabel *passageTitle;
+@property (nonatomic, strong) UILabel *bigTimeLabel;
+@property (nonatomic, strong) UILabel *positionLabel;
+@property (nonatomic, strong) UILabel *durationLabel;
+@property (nonatomic, strong) UIView *volumePlaceholder;
+@property (nonatomic, strong) UILabel *timerDebug;
+@property (nonatomic, strong) UIButton *playPauseButton;
+
+
 - (IBAction)positionSliderValueChanged:(id)sender;
 - (IBAction)positionSliderValueChangeFinished:(id)sender;
 
