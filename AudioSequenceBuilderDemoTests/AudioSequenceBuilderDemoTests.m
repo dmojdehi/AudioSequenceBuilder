@@ -9,7 +9,7 @@
 #import "AudioSequenceBuilderDemoTests.h"
 
 #import "AudioSequenceBuilder.h"
-#import "NSObject+BlockObservation.h"
+#import "NSObject_KVOBlock.h"
 #import <AVFoundation/AVFoundation.h>
 #import "DDXMLDocument.h"
 
@@ -32,7 +32,7 @@
 	// no existing values?  add the value array
 	if(!existingArray)
 	{
-		existingArray = [[[NSMutableArray alloc]init]autorelease];
+		existingArray = [[NSMutableArray alloc]init];
 		[self setObject:existingArray forKey:aKey];
 	}
 	[existingArray addObject:anObject];	
@@ -102,7 +102,7 @@
 	AudioSequenceBuilder *builder = [[AudioSequenceBuilder alloc] init ];
 	[builder loadDocument:docUrl];
 	//[builder loadFromXmlString:@"<root><seq duration=\"10:00.0\"><sound file=\"BG_Reflective_Peace\" loopToFitParent=\"simple\" /></seq></root>"];
-	AVPlayer *player = [[builder buildPlayer] retain];
+	AVPlayer *player = [builder buildPlayer];
 	
 	// we expect the following
 	// fish out the <tests> element
@@ -115,7 +115,7 @@
 	dispatch_group_t waitGroup = dispatch_group_create();
 	// manually indiate that something has started
 	dispatch_group_enter(waitGroup);
-	[player addObserverForKeyPath:@"status" task:^(id obj, NSDictionary *change) {
+	[player addKVOBlockForKeyPath:@"status" options:0 handler:^(NSString *keyPath, id object, NSDictionary *change) {
 		
 		AVPlayerStatus playerStatus = player.status;
 		
@@ -138,7 +138,7 @@
 	
 	
 	// now, run the tests!
-	NSMutableDictionary *segmentsByName = [[[NSMutableDictionary alloc] init]autorelease];
+	NSMutableDictionary *segmentsByName = [[NSMutableDictionary alloc] init];
 	
 	// verify it built what we expected
 	AVPlayerItem *playerItem = player.currentItem;
