@@ -40,20 +40,6 @@
     return self;
 }
 
--(void)dealloc
-{
-#if qUseTrackStack
-	[mTrackStack release];
-#else
-	[mComposition release];
-	[mTrackPool release];
-#endif
-	[mElementDictionary release];
-	[mNavigationTimes release];
-	[mAudioEnvelopesForTracks release];
-//	[mCompositionTrack release];
-	[super dealloc];
-}
 
 -(void)loadFromXmlString:(NSString*)xmlString
 {	
@@ -115,11 +101,11 @@
 	
 	// make an immutable snapshot of a mutable composition for playback or inspection
 #if qUseTrackStack
-	AVComposition *playerItemForSnapshottedComposition = [[mTrackStack.composition copy] autorelease];
+	AVComposition *playerItemForSnapshottedComposition = [mTrackStack.composition copy];
 #else
 	AVComposition *playerItemForSnapshottedComposition = [[mComposition copy] autorelease];
 #endif
-	AVPlayerItem *playerItem = [[[AVPlayerItem alloc] initWithAsset:playerItemForSnapshottedComposition] autorelease];
+	AVPlayerItem *playerItem = [[AVPlayerItem alloc] initWithAsset:playerItemForSnapshottedComposition];
 	playerItem.audioMix = theAudioMix;
 	audioPlayer = [AVPlayer playerWithPlayerItem:playerItem];
 	
@@ -168,7 +154,7 @@
 		{
 			// not already parsed?
 			// then parse the comma-separated list, and save it back for later
-			parsedArrayInReverseOrder = [[[NSMutableArray alloc]init ]autorelease];
+			parsedArrayInReverseOrder = [[NSMutableArray alloc]init ];
 			NSArray *arrayOfFields = [attrStr componentsSeparatedByString:@","];
 			for(NSString *field in arrayOfFields)
 			{
@@ -288,17 +274,11 @@
 	self=[super init];
 	if(self)
 	{
-		mComposition = [[AVMutableComposition composition] retain];
+		mComposition = [AVMutableComposition composition];
 		mCurrentTrackIndex = 0;
 		mTracks =[[NSMutableArray alloc]init];
 	}
 	return self;
-}
--(void)dealloc
-{
-	[mComposition release];
-	[mTracks release];
-	[super dealloc];
 }
 -(AVMutableCompositionTrack*) currentTrack
 {

@@ -64,14 +64,13 @@
 		87C41322141949070009800C /* SubSegmentBuilderContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4131B141949070009800C /* SubSegmentBuilderContainer.m */; };
 		87C41323141949070009800C /* SubSegmentBuilderSilence.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4131D141949070009800C /* SubSegmentBuilderSilence.m */; };
 		87C41324141949070009800C /* SubSegmentBuilderSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4131F141949070009800C /* SubSegmentBuilderSound.m */; };
-		87C4138E14194E6E0009800C /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135614194E6E0009800C /* DDXMLElementAdditions.m */; };
-		87C4138F14194E6E0009800C /* NSString+DDXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135914194E6E0009800C /* NSString+DDXML.m */; };
-		87C4139014194E6E0009800C /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135C14194E6E0009800C /* DDXMLDocument.m */; };
-		87C4139114194E6E0009800C /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135E14194E6E0009800C /* DDXMLElement.m */; };
-		87C4139214194E6E0009800C /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4136014194E6E0009800C /* DDXMLNode.m */; };
+		87C4138E14194E6E0009800C /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135614194E6E0009800C /* DDXMLElementAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		87C4138F14194E6E0009800C /* NSString+DDXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135914194E6E0009800C /* NSString+DDXML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		87C4139014194E6E0009800C /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135C14194E6E0009800C /* DDXMLDocument.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		87C4139114194E6E0009800C /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4135E14194E6E0009800C /* DDXMLElement.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		87C4139214194E6E0009800C /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C4136014194E6E0009800C /* DDXMLNode.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		87C4139E14194EE30009800C /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C4139C14194EDB0009800C /* libxml2.dylib */; };
 		87C413A9141950610009800C /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C4139C14194EDB0009800C /* libxml2.dylib */; };
-		87C413B11419518C0009800C /* NSObject+BlockObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C413B01419518C0009800C /* NSObject+BlockObservation.m */; };
 		87C413B3141952720009800C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B2141952720009800C /* CoreMedia.framework */; };
 		87C413B51419527D0009800C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B41419527D0009800C /* AVFoundation.framework */; };
 		87C413B6141952800009800C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C413B41419527D0009800C /* AVFoundation.framework */; };
@@ -169,8 +168,6 @@
 		87C4136014194E6E0009800C /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
 		87C4136214194E6E0009800C /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
 		87C4139C14194EDB0009800C /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		87C413AF1419518C0009800C /* NSObject+BlockObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+BlockObservation.h"; sourceTree = "<group>"; };
-		87C413B01419518C0009800C /* NSObject+BlockObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+BlockObservation.m"; sourceTree = "<group>"; };
 		87C413B2141952720009800C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		87C413B41419527D0009800C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		87F123901452969400491F62 /* testSimpleSequence.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testSimpleSequence.xml; sourceTree = "<group>"; };
@@ -367,7 +364,6 @@
 		87C4132914194E5D0009800C /* 3rdParty */ = {
 			isa = PBXGroup;
 			children = (
-				87C413AE1419518C0009800C /* NSObject+BlockObservation */,
 				87C4132B14194E6E0009800C /* KissXml */,
 			);
 			name = 3rdParty;
@@ -423,16 +419,6 @@
 				87C4136214194E6E0009800C /* DDXMLPrivate.h */,
 			);
 			path = Private;
-			sourceTree = "<group>";
-		};
-		87C413AE1419518C0009800C /* NSObject+BlockObservation */ = {
-			isa = PBXGroup;
-			children = (
-				87C413AF1419518C0009800C /* NSObject+BlockObservation.h */,
-				87C413B01419518C0009800C /* NSObject+BlockObservation.m */,
-			);
-			name = "NSObject+BlockObservation";
-			path = "3rdParty/NSObject+BlockObservation";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -594,7 +580,6 @@
 				87C4139014194E6E0009800C /* DDXMLDocument.m in Sources */,
 				87C4139114194E6E0009800C /* DDXMLElement.m in Sources */,
 				87C4139214194E6E0009800C /* DDXMLNode.m in Sources */,
-				87C413B11419518C0009800C /* NSObject+BlockObservation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -698,8 +683,10 @@
 		8701B6F1141946D100FB5E95 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -710,8 +697,10 @@
 		8701B6F2141946D100FB5E95 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -723,12 +712,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AudioSequenceBuilderDemo.app/AudioSequenceBuilderDemo";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemoTests/AudioSequenceBuilderDemoTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -741,12 +732,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AudioSequenceBuilderDemo.app/AudioSequenceBuilderDemo";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemoTests/AudioSequenceBuilderDemoTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -16,8 +16,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface SubSegmentBuilder : NSObject
 {
-	DDXMLElement *mElement;
-	SubSegmentBuilderContainer *mParent;	
+	DDXMLElement *__unsafe_unretained mElement;
+	SubSegmentBuilderContainer *__unsafe_unretained mParent;	
 	NSString *mId;
 	NSMutableSet	*mTags;
 	double mBeginTimeInParent;

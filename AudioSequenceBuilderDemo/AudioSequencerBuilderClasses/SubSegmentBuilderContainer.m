@@ -61,11 +61,6 @@ const double kDoesntHaveFixedDuration = -1.0;
 	return self;
 	
 }
--(void)dealloc
-{
-	[mChildBuilders release];
-	[super dealloc];
-}
 -(double)nextWritePos
 {
 	return mNextWritePos;

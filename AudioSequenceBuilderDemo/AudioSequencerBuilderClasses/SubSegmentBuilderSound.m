@@ -294,7 +294,6 @@ double kUnlimitedRemaining = 999999.9;
 		{
 			[NSException raise:@"Unable to open file" format:@"line %d: File '%@.mp3' couldn't be opened", 0/*elem.line*/, mFilename];
 		}
-		[mAsset retain];
 		
 		
 		// determine the mark in & out
@@ -322,7 +321,7 @@ double kUnlimitedRemaining = 999999.9;
 			{
 				NSString *warningMessage = [NSString stringWithFormat:@"The duration of file '%@' wasn't available immediately  (status = %d).  It will play incorrectly.", filename, status];
 				NSLog(@"%@", warningMessage);
-				UIAlertView *alert= [[[UIAlertView alloc] initWithTitle:@"Audio slow to load!" message:warningMessage delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles: nil] autorelease];
+				UIAlertView *alert= [[UIAlertView alloc] initWithTitle:@"Audio slow to load!" message:warningMessage delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles: nil];
 				[alert	show];
 			}
 			
@@ -345,13 +344,6 @@ double kUnlimitedRemaining = 999999.9;
 	return self;
 }
 
--(void)dealloc
-{
-	[mFilename release];
-	[mFilenameOfTrimmedMedia release];
-	[mAsset release];
-	[super dealloc];
-}
 
 -(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoTrack:(AVMutableCompositionTrack*)compositionTrack
 {	

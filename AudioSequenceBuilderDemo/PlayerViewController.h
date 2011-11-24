@@ -30,8 +30,8 @@
 
 }
 
-@property (nonatomic, retain) AVPlayer *player;
-@property (nonatomic, retain) AudioSequenceBuilder *builder;
+@property (nonatomic, strong) AVPlayer *player;
+@property (nonatomic, strong) AudioSequenceBuilder *builder;
 - (IBAction)positionSliderValueChanged:(id)sender;
 - (IBAction)positionSliderValueChangeFinished:(id)sender;
 

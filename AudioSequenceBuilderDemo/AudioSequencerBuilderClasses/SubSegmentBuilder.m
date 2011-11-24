@@ -26,7 +26,7 @@
     if (self) {
         // Initialization code here.
 		mElement = elem;
-		mParent = [parent retain];
+		mParent = parent;
 		mId = [[[elem attributeForName:@"id"] stringValue] copy];
 		
 		// get the tags from:
@@ -44,15 +44,6 @@
     
     return self;
 }
--(void)dealloc
-{
-	
-	[mId release];
-	[mParent release];
-	[mElement release];
-	[mTags release];
-	[super dealloc];
-}
 
 +(SubSegmentBuilder*)makeAudioSegmentBuilderFor:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent
 {
@@ -66,7 +57,7 @@
 	   [nodeName compare:@"root"] == 0 ||
 	   [nodeName compare:@"par"] == 0 )
 	{
-		SubSegmentBuilderContainer *segBuilderAsContainer = [[[SubSegmentBuilderContainer alloc]initWithElem:elem inContainer:parent ]autorelease];
+		SubSegmentBuilderContainer *segBuilderAsContainer = [[SubSegmentBuilderContainer alloc]initWithElem:elem inContainer:parent ];
 		segBuilder = segBuilderAsContainer;
 		
 		//=============================================
@@ -123,7 +114,7 @@
 		// make it dependent on the relevant parent elements
 		// (either the previous sibling's position & duration, or the parents duration)
 		
-		segBuilder = [[[SubSegmentBuilderSound alloc]initWithElem:elem inContainer:parent]autorelease];
+		segBuilder = [[SubSegmentBuilderSound alloc]initWithElem:elem inContainer:parent];
 		
 	}
 	else if([nodeName compare:@"padding"] == 0)
@@ -147,11 +138,11 @@
 			//	  - we also use that parent as the place we store the total ratio counter
 			//
 			// we will *block* on it's completion, then use *it* to derive our position info
-			segBuilder = [[[SubSegmentBuilderRelativeSilence alloc] initWithElem:elem inContainer:parent] autorelease];
+			segBuilder = [[SubSegmentBuilderRelativeSilence alloc] initWithElem:elem inContainer:parent];
 		}
 		else if(durationStr)
 		{
-			segBuilder = [[[SubSegmentBuilderFixedSilence alloc] initWithElem:elem inContainer:parent]autorelease];
+			segBuilder = [[SubSegmentBuilderFixedSilence alloc] initWithElem:elem inContainer:parent];
 		}
 	}
 	else

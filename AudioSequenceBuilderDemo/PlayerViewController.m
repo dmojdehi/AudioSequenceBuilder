@@ -12,7 +12,7 @@
 #import <MediaPlayer/MPVolumeView.h>
 #import "AudioSequenceBuilder.h"
 #import "DDXML.h"
-#import "NSObject+BlockObservation.h"
+//#import "NSObject+BlockObservation.h"
 
 
 @interface PlayerViewController (Private)
@@ -39,25 +39,12 @@
 	if(mPlayer)
 	{
 		[mPlayer pause];
-		[mPlayer release];
-		mPlayer = nil;
 	}
 	
-	[mBuilder release];
-	mBuilder = nil;
 	
-	[mTimeSlider release];
 	mTimeSlider = nil;
-	[mBigTimeLabel release];
 	mBigTimeLabel = nil;
 	
-    [mDurationLabel release];
-    [mPositionLabel release];
-	[mVolumePlaceholder release];
-    [mTimerDebug release];
-	[mPlayPauseButton release];
-	[mPassageTitle release];
-    [super dealloc];
 }
 
 - (void)didReceiveMemoryWarning
@@ -83,12 +70,12 @@
 	// create the custsom navigation bar
 	if(true)
 	{
-		UIView *customHeaderView = [[[UIView alloc]initWithFrame:CGRectMake(40, 0, 200, 40)] autorelease];
+		UIView *customHeaderView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, 200, 40)];
 		const CGFloat kRowHeight = 13.0;
 		// top row
 		if(true)
 		{
-			UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0*kRowHeight, 200, kRowHeight)] autorelease];
+			UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0*kRowHeight, 200, kRowHeight)];
 			label.text = topLine;
 			label.backgroundColor = [UIColor clearColor];
 			label.font = [UIFont boldSystemFontOfSize:13];
@@ -101,7 +88,7 @@
 		// middle row
 		if(true)
 		{
-			UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(0, 1*kRowHeight, 200, kRowHeight)] autorelease];
+			UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 1*kRowHeight, 200, kRowHeight)];
 			label.text = middleLine;
 			label.backgroundColor = [UIColor clearColor];
 			label.font = [UIFont boldSystemFontOfSize:13];
@@ -114,7 +101,7 @@
 		// bottom row
 		if(true)
 		{
-			UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(0, 2*kRowHeight, 200, kRowHeight)] autorelease];
+			UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 2*kRowHeight, 200, kRowHeight)];
 			label.text = bottomLine;
 			label.backgroundColor = [UIColor clearColor];
 			label.font = [UIFont boldSystemFontOfSize:13];
@@ -252,7 +239,7 @@
 {
 	
 	// load the builder
-	AudioSequenceBuilder *builder = [[[AudioSequenceBuilder alloc] init ] autorelease];
+	AudioSequenceBuilder *builder = [[AudioSequenceBuilder alloc] init ];
 	
 	// load the xml
 	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:xmlFilename withExtension:@"xml"];
@@ -292,6 +279,7 @@
 	self.builder = builder;
 	
 	// once it's ready, begin playback
+#if 0
 	[self.player addObserverForKeyPath:@"status" task:^(id obj, NSDictionary *change) {
 		
 		AVPlayerStatus playerStatus = self.player.status;
@@ -336,7 +324,7 @@
 		{
 		}
 	}];
-	
+#endif
 	
 }
 

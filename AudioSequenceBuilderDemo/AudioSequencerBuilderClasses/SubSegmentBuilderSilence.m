@@ -42,10 +42,6 @@
 }
 
 
--(void)dealloc
-{
-	[super dealloc];
-}
 @end
 
 
@@ -118,10 +114,6 @@
 	mParent.nextWritePos += mResolvedTimeToPad;
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
 @end
 
 
