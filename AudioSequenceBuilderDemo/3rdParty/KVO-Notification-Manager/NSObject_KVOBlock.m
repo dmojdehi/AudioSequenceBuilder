@@ -131,7 +131,8 @@ static void *KVO;
 #pragma mark -
 
 @interface CKVOBlockHelper ()
-@property (readonly, nonatomic, weak) id observedObject;
+@property (readonly, nonatomic) __unsafe_unretained id observedObject;
+//@property (readonly, nonatomic, weak) id observedObject;
 @end
 
 #pragma mark -

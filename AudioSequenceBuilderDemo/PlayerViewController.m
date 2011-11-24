@@ -12,6 +12,7 @@
 #import <MediaPlayer/MPVolumeView.h>
 #import "AudioSequenceBuilder.h"
 #import "DDXML.h"
+#import "NSObject_KVOBlock.h"
 //#import "NSObject+BlockObservation.h"
 
 
@@ -279,9 +280,7 @@
 	self.builder = builder;
 	
 	// once it's ready, begin playback
-#if 0
-	[self.player addObserverForKeyPath:@"status" task:^(id obj, NSDictionary *change) {
-		
+	[self.player addKVOBlockForKeyPath:@"status" options:0 handler:^(NSString *keyPath, id obj, NSDictionary *change) {
 		AVPlayerStatus playerStatus = self.player.status;
 		
 		if(playerStatus == AVPlayerStatusReadyToPlay)
@@ -324,7 +323,6 @@
 		{
 		}
 	}];
-#endif
 	
 }
 
