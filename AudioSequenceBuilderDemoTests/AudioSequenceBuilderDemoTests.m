@@ -70,7 +70,7 @@
 -(void)testAudioSimpleLooping
 {
 	
-#if 1
+#if 0
 	NSArray *xmlFilesToTest = [NSArray arrayWithObjects:
 							   @"testTracksComplex1",
 							   nil];
@@ -79,6 +79,7 @@
 							   @"testSimpleLoopNested",
 							   //@"testNestedDurations",
 							   @"testNestedDurations2",
+							   @"testNestedDurations3",
 							   @"testSimpleSequence",
 							   @"testTracksSimple",
 							   @"testTracksComplex1",

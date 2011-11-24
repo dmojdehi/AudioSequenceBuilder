@@ -17,7 +17,7 @@
 	<test>
 		<totalSegments count="6" />
 		<segment file="toneVarying10Seconds" targetTime="0:00.0" targetDuration="0:10.0" />
-		<segment file="toneVarying10Seconds" targetTime="0:10.0" targetDuration="0:10.0" />
+		<segment file="toneVarying10Seconds" targetTime="0:10.0" targetDuration="0:20.0" />
 		<segment file="toneVarying10Seconds" targetTime="0:20.0" targetDuration="0:10.0" />
 		<segment file="toneVarying10Seconds" targetTime="0:30.0" targetDuration="0:10.0" />
 		<segment file="toneVarying10Seconds" targetTime="0:40.0" targetDuration="0:10.0" />

@@ -1,0 +1,31 @@
+<root>
+	<!--
+	 	 We test some complex looping, but shifted ten seconds from time 0 by an initial sound.  
+	     We're trying to verify that the writes obey the local time correctly 
+	 -->
+	<seq>
+		<sound file="toneVarying10Seconds" />
+		<par duration="3:00.0000" >
+			<seq>
+				<sound file="toneVarying10Seconds" />
+				<seq>
+					<seq>
+						<sound file="toneOneMinute" loopToFitParent="loopSimple" />
+					</seq>
+				</seq>
+				<sound file="toneVarying10Seconds" />
+			</seq>
+		</par>
+	<seq>
+	
+		
+	<test>
+		<totalSegments count="5" />
+		<segment file="toneVarying10Seconds" targetTime="0:00.0" targetDuration="0:10.0" />
+		<segment file="toneVarying10Seconds" targetTime="0:10.0" targetDuration="0:10.0" />
+		<segment file="toneOneMinute"        targetTime="0:20.0" targetDuration="1:00.0" />
+		<segment file="toneOneMinute"        targetTime="1:30.0" targetDuration="1:00.0" />
+		<segment file="toneOneMinute"        targetTime="2:20.0" targetDuration="0:40.0" /> <!-- this loop is truncated to 40 seconds! -->
+		<segment file="toneVarying10Seconds" targetTime="3:00.0" targetDuration="0:10.0" />
+	</test>
+</root>
