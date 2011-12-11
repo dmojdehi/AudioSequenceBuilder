@@ -94,12 +94,20 @@
 			if(segBuilderAsContainer.optionalFixedDuration == kDoesntHaveFixedDuration)
 			{
 				// the container is variably-sized, so accumulate that size
+#if qDurationIsReadonly
+				[parent addToMediaAndFixedPadding:segBuilderAsContainer.durationOfMediaAndFixedPadding];
+#else
 				parent.durationOfMediaAndFixedPadding += segBuilderAsContainer.durationOfMediaAndFixedPadding;
+#endif
 			}
 			else
 			{
 				// the container has a fixed size, so we accumulate that
+#if qDurationIsReadonly
+				[parent addToMediaAndFixedPadding:segBuilderAsContainer.optionalFixedDuration];
+#else
 				parent.durationOfMediaAndFixedPadding += segBuilderAsContainer.optionalFixedDuration;
+#endif
 			}			
 		}
 

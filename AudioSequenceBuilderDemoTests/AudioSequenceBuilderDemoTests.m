@@ -75,11 +75,14 @@
 							   @"testTracksComplex1",
 							   nil];
 #else
-	NSArray *xmlFilesToTest = [NSArray arrayWithObjects:@"testSimpleLoop",
+	NSArray *xmlFilesToTest = [NSArray arrayWithObjects:
+							   @"testSimpleLoop",
 							   @"testSimpleLoopNested",
 							   //@"testNestedDurations",
 							   @"testNestedDurations2",
 							   @"testNestedDurations3",
+							   @"testNestedDurationsMore",
+							   @"testParDurations",
 							   @"testSimpleSequence",
 							   @"testTracksSimple",
 							   @"testTracksComplex1",
@@ -99,6 +102,8 @@
  	NSURL *docUrl = [[NSBundle mainBundle] URLForResource:filename withExtension:@"xml"];	
  	//NSURL *docUrl = [[NSBundle mainBundle] URLForResource:@"testSimpleLoop" withExtension:@"xml"];
 	
+	NSLog(@"------------------------------------------------------------------------------------------------------");
+	NSLog(@"Testing file: %@.xml", filename);
 	AudioSequenceBuilder *builder = [[AudioSequenceBuilder alloc] init ];
 	[builder loadDocument:docUrl];
 	//[builder loadFromXmlString:@"<root><seq duration=\"10:00.0\"><sound file=\"BG_Reflective_Peace\" loopToFitParent=\"simple\" /></seq></root>"];
@@ -231,6 +236,9 @@
 		}
 	}
 	
+	NSLog(@"     end testing file: %@.xml", filename);
+	NSLog(@"------------------------------------------------------------------------------------------------------");
+
 	
 	
 }

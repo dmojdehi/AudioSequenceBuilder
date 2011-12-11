@@ -1,0 +1,20 @@
+<root>
+	<!--
+	 	 Test a duration bug from DrumJourney2
+	 	The total duration shouldn't exceed 10 mins, but does for some reason
+	 -->
+	<seq  duration="1:30.0000">
+		<sound file="toneOneMinute" loopToFitParent="loopFromEnd" />
+		<par>
+			<sound file="toneVarying10Seconds" />
+		</par>
+	</seq>
+	
+	<test>
+		<totalSegments count="3" />
+		<segment file="toneOneMinute"        targetTime="0:00.0" targetDuration="0:20.0" />
+		<segment file="toneOneMinute"        targetTime="0:20.0" targetDuration="1:00.0" />
+		<segment file="toneVarying10Seconds" targetTime="1:20.0" targetDuration="0:10.0" />
+	</test>
+
+</root>

@@ -8,6 +8,8 @@
 
 #import "SubSegmentBuilder.h"
 
+#define qDurationIsReadonly		1
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 extern const double kDoesntHaveFixedDuration;
 
@@ -17,6 +19,9 @@ extern const double kDoesntHaveFixedDuration;
 	NSMutableArray *mChildBuilders;
 	
 	double mOptionalFixedDuration;
+#if qDurationIsReadonly
+	double mGreatestDurationOfMediaAndFixedPadding;
+#endif
 	double mDurationOfMediaAndFixedPadding;
 	double mTotalOfAllocatedRatios;
 	int mPlayCount;
@@ -26,7 +31,11 @@ extern const double kDoesntHaveFixedDuration;
 }
 @property (nonatomic, readonly) NSMutableArray *childBuilders;
 @property (nonatomic, readonly) int playCount;
+#if qDurationIsReadonly
+@property (nonatomic, readonly) double durationOfMediaAndFixedPadding;
+#else
 @property (nonatomic) double durationOfMediaAndFixedPadding;
+#endif
 @property (nonatomic) double totalOfAllocatedRatios;
 @property (nonatomic, readonly) double optionalFixedDuration;
 @property (nonatomic) double nextWritePos;
@@ -34,5 +43,8 @@ extern const double kDoesntHaveFixedDuration;
 
 -(double)durationToFill;
 -(bool)hasAnyFixedDurations;
+#if qDurationIsReadonly
+-(void)addToMediaAndFixedPadding:(double)duration;
+#endif
 
 @end

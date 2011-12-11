@@ -338,7 +338,11 @@ double kUnlimitedRemaining = 999999.9;
 		// loop to fit elements *don't* extend their parents duration
 		if(mLoopLogic.loopMode == kLoopNone)
 		{
+#if qDurationIsReadonly
+			[parent addToMediaAndFixedPadding: mMarkOut - mMarkIn];
+#else
 			parent.durationOfMediaAndFixedPadding += mMarkOut - mMarkIn;
+#endif
 		}
 	}
 	return self;

@@ -30,8 +30,12 @@
 		{
 			[NSException raise:@"<padding> expected a fixed duration" format:@""];
 		}
-		
+
+#if qDurationIsReadonly
+		[parent addToMediaAndFixedPadding: mFixedDuration];
+#else
 		parent.durationOfMediaAndFixedPadding += mFixedDuration;
+#endif
 		
 	}
 	return self;

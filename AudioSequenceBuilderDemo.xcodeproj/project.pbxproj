@@ -35,7 +35,21 @@
 		874B01EF14196B2F00B514FB /* testSimpleLoopNested.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01EB14196B2F00B514FB /* testSimpleLoopNested.xml */; };
 		874B01F114196BAF00B514FB /* CarSequence.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01F014196BAF00B514FB /* CarSequence.xml */; };
 		874B01F314196CAF00B514FB /* CarSequenceWithBackground.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01F214196CAF00B514FB /* CarSequenceWithBackground.xml */; };
+		8783B4EA149423C800CD592D /* testNestedDurationsMore.xml in Resources */ = {isa = PBXBuildFile; fileRef = 8783B4E9149423C800CD592D /* testNestedDurationsMore.xml */; };
+		8783B4EB149423CD00CD592D /* testNestedDurationsMore.xml in Resources */ = {isa = PBXBuildFile; fileRef = 8783B4E9149423C800CD592D /* testNestedDurationsMore.xml */; };
+		8783B4EC149423F600CD592D /* testTracksComplex1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 871EB1CB1454BE2E00F4D002 /* testTracksComplex1.xml */; };
+		8783B4ED149423F600CD592D /* testTracksSimple.xml in Resources */ = {isa = PBXBuildFile; fileRef = 871EB1CC1454BE2E00F4D002 /* testTracksSimple.xml */; };
+		8783B4EE149423F600CD592D /* testSimpleSequence.xml in Resources */ = {isa = PBXBuildFile; fileRef = 87F123901452969400491F62 /* testSimpleSequence.xml */; };
+		8783B4EF149423F600CD592D /* testNestedDurations.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01E814196B2F00B514FB /* testNestedDurations.xml */; };
+		8783B4F0149423F600CD592D /* testNestedDurations2.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01E914196B2F00B514FB /* testNestedDurations2.xml */; };
+		8783B4F1149423F600CD592D /* testNestedDurations3.xml in Resources */ = {isa = PBXBuildFile; fileRef = 878C05B61461EFF500A174C2 /* testNestedDurations3.xml */; };
+		8783B4F2149423F600CD592D /* testSimpleLoop.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01EA14196B2F00B514FB /* testSimpleLoop.xml */; };
+		8783B4F3149423F600CD592D /* testSimpleLoopNested.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01EB14196B2F00B514FB /* testSimpleLoopNested.xml */; };
+		8783B4F4149423F600CD592D /* silenceOneSecond.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 87C4130F141948CF0009800C /* silenceOneSecond.m4a */; };
+		8783B4F5149423F600CD592D /* toneOneMinute.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 87C41310141948CF0009800C /* toneOneMinute.m4a */; };
+		8783B4F6149423F600CD592D /* toneVarying10Seconds.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 87C41311141948CF0009800C /* toneVarying10Seconds.m4a */; };
 		878C05B71461EFF500A174C2 /* testNestedDurations3.xml in Resources */ = {isa = PBXBuildFile; fileRef = 878C05B61461EFF500A174C2 /* testNestedDurations3.xml */; };
+		879735671495600A005564D9 /* testParDurations.xml in Resources */ = {isa = PBXBuildFile; fileRef = 879735661495600A005564D9 /* testParDurations.xml */; };
 		87C412F3141948A30009800C /* nextDisabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 87C412DF141948A30009800C /* nextDisabled.png */; };
 		87C412F4141948A30009800C /* nextDisabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 87C412E0141948A30009800C /* nextDisabled@2x.png */; };
 		87C412F5141948A30009800C /* nextEnabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 87C412E1141948A30009800C /* nextEnabled.png */; };
@@ -123,7 +137,9 @@
 		874B01EB14196B2F00B514FB /* testSimpleLoopNested.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testSimpleLoopNested.xml; sourceTree = "<group>"; };
 		874B01F014196BAF00B514FB /* CarSequence.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CarSequence.xml; sourceTree = "<group>"; };
 		874B01F214196CAF00B514FB /* CarSequenceWithBackground.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CarSequenceWithBackground.xml; sourceTree = "<group>"; };
+		8783B4E9149423C800CD592D /* testNestedDurationsMore.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testNestedDurationsMore.xml; sourceTree = "<group>"; };
 		878C05B61461EFF500A174C2 /* testNestedDurations3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testNestedDurations3.xml; sourceTree = "<group>"; };
+		879735661495600A005564D9 /* testParDurations.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testParDurations.xml; sourceTree = "<group>"; };
 		87C412DF141948A30009800C /* nextDisabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nextDisabled.png; sourceTree = "<group>"; };
 		87C412E0141948A30009800C /* nextDisabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nextDisabled@2x.png"; sourceTree = "<group>"; };
 		87C412E1141948A30009800C /* nextEnabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nextEnabled.png; sourceTree = "<group>"; };
@@ -351,6 +367,8 @@
 				874B01E814196B2F00B514FB /* testNestedDurations.xml */,
 				874B01E914196B2F00B514FB /* testNestedDurations2.xml */,
 				878C05B61461EFF500A174C2 /* testNestedDurations3.xml */,
+				8783B4E9149423C800CD592D /* testNestedDurationsMore.xml */,
+				879735661495600A005564D9 /* testParDurations.xml */,
 				874B01EA14196B2F00B514FB /* testSimpleLoop.xml */,
 				874B01EB14196B2F00B514FB /* testSimpleLoopNested.xml */,
 				87C4130F141948CF0009800C /* silenceOneSecond.m4a */,
@@ -483,6 +501,7 @@
 		8701B6AF141946D000FB5E95 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Mindful Bear Apps";
 			};
 			buildConfigurationList = 8701B6B2141946D000FB5E95 /* Build configuration list for PBXProject "AudioSequenceBuilderDemo" */;
@@ -550,6 +569,8 @@
 				871EB1CD1454BE2E00F4D002 /* testTracksComplex1.xml in Resources */,
 				871EB1CE1454BE2E00F4D002 /* testTracksSimple.xml in Resources */,
 				878C05B71461EFF500A174C2 /* testNestedDurations3.xml in Resources */,
+				8783B4EA149423C800CD592D /* testNestedDurationsMore.xml in Resources */,
+				879735671495600A005564D9 /* testParDurations.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,6 +580,18 @@
 			files = (
 				8701B6E9141946D100FB5E95 /* InfoPlist.strings in Resources */,
 				8701B6EB141946D100FB5E95 /* AudioSequenceBuilderDemoTests.h in Resources */,
+				8783B4EB149423CD00CD592D /* testNestedDurationsMore.xml in Resources */,
+				8783B4EC149423F600CD592D /* testTracksComplex1.xml in Resources */,
+				8783B4ED149423F600CD592D /* testTracksSimple.xml in Resources */,
+				8783B4EE149423F600CD592D /* testSimpleSequence.xml in Resources */,
+				8783B4EF149423F600CD592D /* testNestedDurations.xml in Resources */,
+				8783B4F0149423F600CD592D /* testNestedDurations2.xml in Resources */,
+				8783B4F1149423F600CD592D /* testNestedDurations3.xml in Resources */,
+				8783B4F2149423F600CD592D /* testSimpleLoop.xml in Resources */,
+				8783B4F3149423F600CD592D /* testSimpleLoopNested.xml in Resources */,
+				8783B4F4149423F600CD592D /* silenceOneSecond.m4a in Resources */,
+				8783B4F5149423F600CD592D /* toneOneMinute.m4a in Resources */,
+				8783B4F6149423F600CD592D /* toneVarying10Seconds.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

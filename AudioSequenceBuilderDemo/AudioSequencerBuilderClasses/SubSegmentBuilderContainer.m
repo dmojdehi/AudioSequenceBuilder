@@ -79,8 +79,22 @@ const double kDoesntHaveFixedDuration = -1.0;
 }
 -(double)durationOfMediaAndFixedPadding
 {
-	return  mDurationOfMediaAndFixedPadding;
+#if qDurationIsReadonly
+	return mGreatestDurationOfMediaAndFixedPadding;
+#else
+	return mDurationOfMediaAndFixedPadding;
+#endif
 }
+
+#if qDurationIsReadonly
+-(void)addToMediaAndFixedPadding:(double)duration
+{
+	mDurationOfMediaAndFixedPadding += duration;
+	if(mDurationOfMediaAndFixedPadding > mGreatestDurationOfMediaAndFixedPadding)
+		mGreatestDurationOfMediaAndFixedPadding = mDurationOfMediaAndFixedPadding;
+}
+
+#else
 -(void)setDurationOfMediaAndFixedPadding:(double)durationOfMediaAndFixedPadding
 {
 	// par's don't accumulate fixed padding
@@ -89,6 +103,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 	else
 		mDurationOfMediaAndFixedPadding = durationOfMediaAndFixedPadding;
 }
+#endif
 -(void)passOneResolvePadding
 {
 	for(SubSegmentBuilder *child in mChildBuilders)
@@ -126,6 +141,8 @@ const double kDoesntHaveFixedDuration = -1.0;
 	{
 		// check if we are embedded in a parent that has a fixed duration
 		remaining = [mParent durationToFill];
+#if qDurationIsReadonly
+#else
 		if(mParent.isParallel && !mIsParallel)
 		{
 			// if our parent is a par but we are a seq, we must remove any media time we have
@@ -133,6 +150,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 			// (if we were both Par's, neither of us would care)
 			remaining -= mDurationOfMediaAndFixedPadding;
 		}
+#endif
 	}
 	if(remaining < 0.0)
 		remaining = 0.0;
