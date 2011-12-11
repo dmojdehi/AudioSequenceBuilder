@@ -178,28 +178,12 @@ const double kDoesntHaveFixedDuration = -1.0;
 		{
 			mNextWritePos = beginTimeInParent;
 			
-#if qUseTrackStack
-#else
-			// par's require a separate track for each child
-			if(idx < [builder.trackPool count])
-			{
-				compositionTrackToUse = [builder.trackPool objectAtIndex:idx];
-			}
-			else
-			{
-				// we get here if the track pool doesn't have enough tracks!
-				// so add one
-				compositionTrackToUse = [builder.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-				[builder.trackPool addObject:compositionTrackToUse];
-			}
-#endif
 			
 			//mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
 			
 		}
 		[child passTwoApplyMedia:builder intoTrack:compositionTrackToUse];
 		
-#if qUseTrackStack
 		if(mIsParallel)
 		{
 			// advance (but don't yet allocate) the track stack
@@ -210,7 +194,6 @@ const double kDoesntHaveFixedDuration = -1.0;
 			//seq's restore the track index after child processing
 			builder.trackStack.currentTrackIndex = savedTrackIndex;
 		}
-#endif
 		
 	}];
 	

@@ -16,7 +16,6 @@
 @class AVMutableAudioMixInputParameters;
 @class TrackStack;
 
-#define qUseTrackStack		1
 
 @interface AudioSequenceBuilder : NSObject
 {
@@ -25,22 +24,12 @@
 	NSMutableArray *mNavigationTimes;
 
 	NSMutableDictionary *mAudioEnvelopesForTracks;
-#if qUseTrackStack
 	TrackStack *mTrackStack;
-#else
-	AVMutableComposition *mComposition;
-	NSMutableArray *mTrackPool;
-#endif
 }
 
 @property (nonatomic, readonly) DDXMLDocument *document;
 @property (nonatomic, readonly) NSArray *navigationTimes;
-#if qUseTrackStack
 @property (nonatomic, readonly) TrackStack *trackStack;
-#else
-@property (nonatomic, readonly) AVMutableComposition *composition;
-@property (nonatomic, readonly) NSMutableArray *trackPool;
-#endif
 
 -(void)loadDocument:(NSURL*)documentToLoad;
 -(void)loadFromXmlString:(NSString*)xmlString;
