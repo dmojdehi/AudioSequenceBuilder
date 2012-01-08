@@ -139,8 +139,14 @@ const double kDoesntHaveFixedDuration = -1.0;
 	}
 	else if(mParent)
 	{
-		// check if we are embedded in a parent that has a fixed duration
-		remaining = [mParent durationToFill];
+		remaining = mGreatestDurationOfMediaAndFixedPadding;
+		
+		if(mParent)
+		{
+			// check if we are embedded in a parent that has a fixed duration
+			remaining = [mParent durationToFill];
+		}
+		
 #if qDurationIsReadonly
 #else
 		if(mParent.isParallel && !mIsParallel)
