@@ -247,30 +247,34 @@
 
 
 
+@interface TrackStack()
+@property (nonatomic, strong) NSMutableArray *tracks;
+@end 
 @implementation TrackStack
-@synthesize composition = mComposition;
-@synthesize currentTrackIndex = mCurrentTrackIndex;
+@synthesize composition;
+@synthesize currentTrackIndex;
+@synthesize tracks;
 -(id)init
 {
 	self=[super init];
 	if(self)
 	{
-		mComposition = [AVMutableComposition composition];
-		mCurrentTrackIndex = 0;
-		mTracks =[[NSMutableArray alloc]init];
+		composition = [AVMutableComposition composition];
+		currentTrackIndex = 0;
+		tracks =[[NSMutableArray alloc]init];
 	}
 	return self;
 }
 -(AVMutableCompositionTrack*) currentTrack
 {
 	// get (or make) the current track
-	if(mCurrentTrackIndex >= [mTracks count])
+	if(currentTrackIndex >= [tracks count])
 	{
-		AVMutableCompositionTrack *newtrack = [mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-		[mTracks addObject:newtrack];
+		AVMutableCompositionTrack *newtrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+		[tracks addObject:newtrack];
 
 	}
 	
-	return [mTracks objectAtIndex:mCurrentTrackIndex];
+	return [tracks objectAtIndex:currentTrackIndex];
 }
 @end

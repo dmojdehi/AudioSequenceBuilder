@@ -46,14 +46,8 @@
 @end
 
 
-@interface TrackStack : NSObject {
-@private
-	AVMutableComposition *__unsafe_unretained mComposition;
-
-    NSMutableArray *mTracks;
-	int mCurrentTrackIndex;
-}
-@property (unsafe_unretained, nonatomic, readonly) AVMutableCompositionTrack* currentTrack;
+@interface TrackStack : NSObject
+@property (nonatomic, readonly, strong) AVMutableCompositionTrack* currentTrack;
 @property (nonatomic, assign) int currentTrackIndex;
-@property (nonatomic, readonly) AVMutableComposition *composition;
+@property (nonatomic, readonly, strong) AVMutableComposition *composition;
 @end
