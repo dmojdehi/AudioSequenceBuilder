@@ -425,6 +425,7 @@ double kUnlimitedRemaining = 999999.9;
 			// also, fade out over the last second or so
 			CMTime fadeOutBeginTime = CMTimeAdd( insertionPos, CMTimeMakeWithSeconds(moreRemaining - kFadeOutDuration, 44100) );
 			CMTimeRange fadeOutRange = CMTimeRangeMake(fadeOutBeginTime, CMTimeMakeWithSeconds(kFadeOutDuration, 44100));
+			NSString *fadeOutDesc = (__bridge NSString *) CMTimeRangeCopyDescription(kCFAllocatorDefault, fadeOutRange);
 			[audioEnvelope setVolumeRampFromStartVolume:mVolume toEndVolume:0.0 timeRange:fadeOutRange];
 
 			//[audioMix setVolumeRampFromStartVolume:0.0 toEndVolume:volume timeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(5.0, 44100))];

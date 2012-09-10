@@ -16,14 +16,14 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface SubSegmentBuilder : NSObject
 {
-	DDXMLElement *__unsafe_unretained mElement;
-	SubSegmentBuilderContainer *__unsafe_unretained mParent;	
+	DDXMLElement * mElement;
+	__weak SubSegmentBuilderContainer *mParent;	
 	NSString *mId;
 	NSMutableSet	*mTags;
 	double mBeginTimeInParent;
 }
 @property (nonatomic, readonly) DDXMLElement *element;
-@property (nonatomic, readonly) SubSegmentBuilderContainer *parent;
+@property (nonatomic, readonly, weak) SubSegmentBuilderContainer *parent;
 
 -(id)initWithElem:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent;
 +(SubSegmentBuilder*)makeAudioSegmentBuilderFor:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent;
