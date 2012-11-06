@@ -83,7 +83,6 @@
 	NSArray *audioMixParameters = [mAudioEnvelopesForTracks allValues];
 	theAudioMix.inputParameters = audioMixParameters;	
 	
-	
 	// make an immutable snapshot of a mutable composition for playback or inspection
 	AVComposition *playerItemForSnapshottedComposition = [mTrackStack.composition copy];
 	AVPlayerItem *playerItem = [[AVPlayerItem alloc] initWithAsset:playerItemForSnapshottedComposition];

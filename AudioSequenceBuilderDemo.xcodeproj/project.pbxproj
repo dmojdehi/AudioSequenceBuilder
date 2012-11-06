@@ -35,6 +35,7 @@
 		874B01EF14196B2F00B514FB /* testSimpleLoopNested.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01EB14196B2F00B514FB /* testSimpleLoopNested.xml */; };
 		874B01F114196BAF00B514FB /* CarSequence.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01F014196BAF00B514FB /* CarSequence.xml */; };
 		874B01F314196CAF00B514FB /* CarSequenceWithBackground.xml in Resources */ = {isa = PBXBuildFile; fileRef = 874B01F214196CAF00B514FB /* CarSequenceWithBackground.xml */; };
+		8759A82B16491D9700AC6062 /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8759A82A16491D9700AC6062 /* PlayerView.m */; };
 		8783B4EA149423C800CD592D /* testNestedDurationsMore.xml in Resources */ = {isa = PBXBuildFile; fileRef = 8783B4E9149423C800CD592D /* testNestedDurationsMore.xml */; };
 		8783B4EB149423CD00CD592D /* testNestedDurationsMore.xml in Resources */ = {isa = PBXBuildFile; fileRef = 8783B4E9149423C800CD592D /* testNestedDurationsMore.xml */; };
 		8783B4EC149423F600CD592D /* testTracksComplex1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 871EB1CB1454BE2E00F4D002 /* testTracksComplex1.xml */; };
@@ -137,6 +138,8 @@
 		874B01EB14196B2F00B514FB /* testSimpleLoopNested.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testSimpleLoopNested.xml; sourceTree = "<group>"; };
 		874B01F014196BAF00B514FB /* CarSequence.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CarSequence.xml; sourceTree = "<group>"; };
 		874B01F214196CAF00B514FB /* CarSequenceWithBackground.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CarSequenceWithBackground.xml; sourceTree = "<group>"; };
+		8759A82916491D9700AC6062 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
+		8759A82A16491D9700AC6062 /* PlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
 		8783B4E9149423C800CD592D /* testNestedDurationsMore.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testNestedDurationsMore.xml; sourceTree = "<group>"; };
 		878C05B61461EFF500A174C2 /* testNestedDurations3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testNestedDurations3.xml; sourceTree = "<group>"; };
 		879735661495600A005564D9 /* testParDurations.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testParDurations.xml; sourceTree = "<group>"; };
@@ -267,6 +270,8 @@
 				8701B6CE141946D000FB5E95 /* MainWindow.xib */,
 				87C41308141948B10009800C /* PlayerViewController.h */,
 				87C41309141948B10009800C /* PlayerViewController.m */,
+				8759A82916491D9700AC6062 /* PlayerView.h */,
+				8759A82A16491D9700AC6062 /* PlayerView.m */,
 				87C4130B141948C10009800C /* PlayerViewController.xib */,
 				87C41315141949070009800C /* AudioSequencerBuilderClasses */,
 				8701B6C3141946D000FB5E95 /* Supporting Files */,
@@ -632,6 +637,7 @@
 				87C4139114194E6E0009800C /* DDXMLElement.m in Sources */,
 				87C4139214194E6E0009800C /* DDXMLNode.m in Sources */,
 				87353C73147DEF2D0017B19F /* NSObject_KVOBlock.m in Sources */,
+				8759A82B16491D9700AC6062 /* PlayerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,7 +747,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -756,7 +762,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AudioSequenceBuilderDemo/AudioSequenceBuilderDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
