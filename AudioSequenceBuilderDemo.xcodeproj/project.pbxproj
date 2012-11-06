@@ -137,6 +137,8 @@
 		874B01F214196CAF00B514FB /* CarSequenceWithBackground.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CarSequenceWithBackground.xml; sourceTree = "<group>"; };
 		8759A82916491D9700AC6062 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
 		8759A82A16491D9700AC6062 /* PlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
+		8759A83E1649768600AC6062 /* LICENSE-MIT.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "LICENSE-MIT.txt"; sourceTree = SOURCE_ROOT; };
+		8759A83F1649768600AC6062 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = SOURCE_ROOT; };
 		8783B4E9149423C800CD592D /* testNestedDurationsMore.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testNestedDurationsMore.xml; sourceTree = "<group>"; };
 		878C05B61461EFF500A174C2 /* testNestedDurations3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testNestedDurations3.xml; sourceTree = "<group>"; };
 		879735661495600A005564D9 /* testParDurations.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testParDurations.xml; sourceTree = "<group>"; };
@@ -228,6 +230,8 @@
 		8701B6AD141946D000FB5E95 = {
 			isa = PBXGroup;
 			children = (
+				8759A83E1649768600AC6062 /* LICENSE-MIT.txt */,
+				8759A83F1649768600AC6062 /* README.markdown */,
 				8701B6C2141946D000FB5E95 /* AudioSequenceBuilderDemo */,
 				8701B6E4141946D100FB5E95 /* AudioSequenceBuilderDemoTests */,
 				8701B6BB141946D000FB5E95 /* Frameworks */,
@@ -699,7 +703,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -716,7 +720,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
