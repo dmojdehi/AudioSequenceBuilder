@@ -40,7 +40,7 @@
 	}
 	return self;
 }
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoTrack:(AVMutableCompositionTrack*)compositionTrack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
 {	
 	mParent.nextWritePos += mFixedDuration;
 }
@@ -113,7 +113,7 @@
 		NSLog(@"2nd pass: NOTE!!! Relative padding specified, but no space was available to use it!");
 	}
 }
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoTrack:(AVMutableCompositionTrack*)compositionTrack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
 {	
 	mParent.nextWritePos += mResolvedTimeToPad;
 }

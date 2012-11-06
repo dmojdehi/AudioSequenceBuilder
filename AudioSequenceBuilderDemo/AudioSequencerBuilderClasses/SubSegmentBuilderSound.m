@@ -349,12 +349,21 @@ double kUnlimitedRemaining = 999999.9;
 }
 
 
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoTrack:(AVMutableCompositionTrack*)compositionTrack
-{	
-#if DEBUG 
-	int trackID  = compositionTrack.trackID;
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
+{
+	bool mHasVideo = [[mAsset tracksWithMediaType:AVMediaTypeVideo] count] > 0;
+
+	AVMutableCompositionTrack *compositionAudioTrack = [builder.trackStack getOrCreateNextAudioTrack];
+	AVMutableCompositionTrack *compositionVideoTrack = nil;
+	if(mHasVideo)
+		compositionVideoTrack = [builder.trackStack getOrCreateNextVideoTrack];
+	
+#if DEBUG
+	int trackID  = compositionAudioTrack.trackID;
 	NSLog(@"2nd pass: Adding sound: '%@' to track id:%d (at pos: %f)",mFilename, trackID, mParent.nextWritePos);
 #endif
+	
+	// find the destination tracks
 	
 	//	if([mFilename compare:@"BG_Reflective_Peace"] == 0)
 	//	{
@@ -365,6 +374,17 @@ double kUnlimitedRemaining = 999999.9;
 	{
 		NSLog(@"...  FAILED to add sound.  There we no audio tracks in the asset");
 		[NSException raise:@"Asset had no audio" format:@"line %d: File '%@.mp3' had no audio tracks", 0 /*mElement.line*/, mFilename];
+	}
+	
+	AVAssetTrack *sourceVideoTrack = nil;
+	if(mHasVideo)
+	{
+		sourceVideoTrack = [[mAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+		if(!sourceVideoTrack)
+		{
+			NSLog(@"...  FAILED to add video.  There we no video tracks in the asset");
+			//[NSException raise:@"Asset had no video" format:@"line %d: File '%@' had no video tracks", 0 /*mElement.line*/, mFilename];
+		}
 	}
 	
 	// make an audio mix for this track (actually an AVAudioMixInputParameters
@@ -404,7 +424,7 @@ double kUnlimitedRemaining = 999999.9;
 		
 		// apply at the audio ramp for this clip
 
-		AVMutableAudioMixInputParameters *audioEnvelope = [builder audioEnvelopeForTrack:compositionTrack];
+		AVMutableAudioMixInputParameters *audioEnvelope = [builder audioEnvelopeForTrack:compositionAudioTrack];
 		//AVMutableAudioMixInputParameters *audioEnvelope = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:compositionTrack];
 		[audioEnvelope setVolume:mVolume atTime:insertionPos];
 
@@ -439,12 +459,21 @@ double kUnlimitedRemaining = 999999.9;
 			
 		}
 		
-		BOOL success = [compositionTrack insertTimeRange:sourceMarkInOutTimeRange
+		NSError *errA, *errV;
+		BOOL successA = [compositionAudioTrack insertTimeRange:sourceMarkInOutTimeRange
 												 ofTrack:sourceAudioTrack
 												  atTime:insertionPos
-												   error:&err];
+												   error:&errA];
+		BOOL successV = YES;
+		if(mHasVideo && sourceVideoTrack && compositionVideoTrack)
+		{
+			successV = [compositionVideoTrack insertTimeRange:sourceMarkInOutTimeRange
+												 ofTrack:sourceVideoTrack
+												  atTime:insertionPos
+												   error:&errV];
+		}
 		
-		if(!success || err)
+		if(!successA || !successV || errA || errV)
 		{
 			NSLog(@"...  FAILED to add sound at %f.  Error was: '%@'", mParent.nextWritePos, [err localizedDescription]);
 			break; // no more writing...
@@ -472,7 +501,7 @@ double kUnlimitedRemaining = 999999.9;
 
 +(NSURL *)findAudioFileOfNames:(NSArray *)filenames
 {
-	NSArray *extensions = [NSArray arrayWithObjects:@"aif", @"aiff", @"m4a", @"mp3", nil ] ;
+	NSArray *extensions = @[@"aif", @"aiff", @"m4a", @"mp3", @"m4v" ];
 	
 	
 	for(NSString *filename in filenames)
