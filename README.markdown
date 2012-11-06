@@ -60,7 +60,6 @@ And in your Objective-C code:
 	}
 }
 
-}];
 ```
 
 
