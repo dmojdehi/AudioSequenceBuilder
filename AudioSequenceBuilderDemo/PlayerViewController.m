@@ -12,7 +12,6 @@
 #import <MediaPlayer/MPVolumeView.h>
 #import "AudioSequenceBuilder.h"
 #import "DDXML.h"
-#import "NSObject_KVOBlock.h"
 //#import "NSObject+BlockObservation.h"
 
 
@@ -289,19 +288,27 @@
 	self.builder = builder;
 	
 	// once it's ready, begin playback
-	__unsafe_unretained PlayerViewController *weakSelf = self;
-	[self.player addKVOBlockForKeyPath:@"status" options:0 handler:^(NSString *keyPath, id obj, NSDictionary *change) {
-		AVPlayerStatus playerStatus = weakSelf.player.status;
+	[self.player addObserver:self forKeyPath:@"status" options:0 context:0];
+	
+	
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+
+	if(object == self.player)
+	{
+		AVPlayerStatus playerStatus = self.player.status;
 		
 		if(playerStatus == AVPlayerStatusReadyToPlay)
 		{
 			// make the player
 			// make the new view
 			// update the slider length & pos
-			double duration = CMTimeGetSeconds( weakSelf.player.currentItem.asset.duration );
-			weakSelf.timeSlider.maximumValue = duration;
-			__unsafe_unretained PlayerViewController *weakSelf2 = weakSelf;
-			[weakSelf.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.5, 44100) queue:nil usingBlock:^(CMTime time) {
+			double duration = CMTimeGetSeconds( self.player.currentItem.asset.duration );
+			self.timeSlider.maximumValue = duration;
+			__unsafe_unretained PlayerViewController *weakSelf = self;
+			[self.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.5, 44100) queue:nil usingBlock:^(CMTime time) {
 				
 				//
 				double pos =  CMTimeGetSeconds( time );
@@ -310,33 +317,28 @@
 					remaining = 0.0;
 				
 				// some controls shouldn't be updated while we're dragging the position indicator
-				if(weakSelf2.timeSlider.state == UIControlStateNormal)
+				if(weakSelf.timeSlider.state == UIControlStateNormal)
 				{
-					weakSelf2.timeSlider.value = pos;
-					weakSelf2.timerDebug.text = [NSString stringWithFormat:@"%.2f", pos];
-					[weakSelf2 updateTimeOnLabel:weakSelf2.bigTimeLabel duration:remaining];
+					weakSelf.timeSlider.value = pos;
+					weakSelf.timerDebug.text = [NSString stringWithFormat:@"%.2f", pos];
+					[weakSelf updateTimeOnLabel:weakSelf.bigTimeLabel duration:remaining];
 				}
 				
-				[weakSelf2 updateTimeOnLabel:weakSelf2.positionLabel duration: pos];
-				[weakSelf2 updateTimeOnLabel:weakSelf2.durationLabel duration: duration];
+				[weakSelf updateTimeOnLabel:weakSelf.positionLabel duration: pos];
+				[weakSelf updateTimeOnLabel:weakSelf.durationLabel duration: duration];
 				
-				if(weakSelf2.player.rate == 0.0)
-					[weakSelf2.playPauseButton setImage:[UIImage imageNamed:@"playEnabled.png"] forState:UIControlStateNormal];
+				if(weakSelf.player.rate == 0.0)
+					[weakSelf.playPauseButton setImage:[UIImage imageNamed:@"playEnabled.png"] forState:UIControlStateNormal];
 				else
-					[weakSelf2.playPauseButton setImage:[UIImage imageNamed:@"pauseEnabled.png"] forState:UIControlStateNormal];
+					[weakSelf.playPauseButton setImage:[UIImage imageNamed:@"pauseEnabled.png"] forState:UIControlStateNormal];
 				
 			}];
 			
 			//  play it!
-			[weakSelf.player play];
+			[self.player play];
 		}
-		else
-		{
-		}
-	}];
-	
+	}
 }
-
 
 
 -(void)updateTimeOnLabel: (UILabel*) label duration:(NSTimeInterval) timeUntilDone

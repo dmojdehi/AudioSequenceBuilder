@@ -23,7 +23,6 @@
 		8701B6ED141946D100FB5E95 /* AudioSequenceBuilderDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8701B6EC141946D100FB5E95 /* AudioSequenceBuilderDemoTests.m */; };
 		871EB1CD1454BE2E00F4D002 /* testTracksComplex1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 871EB1CB1454BE2E00F4D002 /* testTracksComplex1.xml */; };
 		871EB1CE1454BE2E00F4D002 /* testTracksSimple.xml in Resources */ = {isa = PBXBuildFile; fileRef = 871EB1CC1454BE2E00F4D002 /* testTracksSimple.xml */; };
-		87353C73147DEF2D0017B19F /* NSObject_KVOBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 87353C71147DEF2D0017B19F /* NSObject_KVOBlock.m */; };
 		874B01E214196B0500B514FB /* car-crash.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 874B01DD14196B0500B514FB /* car-crash.m4a */; };
 		874B01E314196B0500B514FB /* car-door-slam.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 874B01DE14196B0500B514FB /* car-door-slam.m4a */; };
 		874B01E414196B0500B514FB /* car-start.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 874B01DF14196B0500B514FB /* car-start.m4a */; };
@@ -125,8 +124,6 @@
 		8701B6EC141946D100FB5E95 /* AudioSequenceBuilderDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioSequenceBuilderDemoTests.m; sourceTree = "<group>"; };
 		871EB1CB1454BE2E00F4D002 /* testTracksComplex1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testTracksComplex1.xml; sourceTree = "<group>"; };
 		871EB1CC1454BE2E00F4D002 /* testTracksSimple.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testTracksSimple.xml; sourceTree = "<group>"; };
-		87353C70147DEF2D0017B19F /* NSObject_KVOBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSObject_KVOBlock.h; sourceTree = "<group>"; };
-		87353C71147DEF2D0017B19F /* NSObject_KVOBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSObject_KVOBlock.m; sourceTree = "<group>"; };
 		874B01DD14196B0500B514FB /* car-crash.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "car-crash.m4a"; sourceTree = "<group>"; };
 		874B01DE14196B0500B514FB /* car-door-slam.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "car-door-slam.m4a"; sourceTree = "<group>"; };
 		874B01DF14196B0500B514FB /* car-start.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "car-start.m4a"; sourceTree = "<group>"; };
@@ -312,16 +309,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		87353C6F147DEF2D0017B19F /* KVO-Notification-Manager */ = {
-			isa = PBXGroup;
-			children = (
-				87353C70147DEF2D0017B19F /* NSObject_KVOBlock.h */,
-				87353C71147DEF2D0017B19F /* NSObject_KVOBlock.m */,
-			);
-			name = "KVO-Notification-Manager";
-			path = "3rdParty/KVO-Notification-Manager";
-			sourceTree = "<group>";
-		};
 		874B01DC14196B0500B514FB /* samples */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,7 +390,6 @@
 		87C4132914194E5D0009800C /* 3rdParty */ = {
 			isa = PBXGroup;
 			children = (
-				87353C6F147DEF2D0017B19F /* KVO-Notification-Manager */,
 				87C4132B14194E6E0009800C /* KissXml */,
 			);
 			name = 3rdParty;
@@ -636,7 +622,6 @@
 				87C4139014194E6E0009800C /* DDXMLDocument.m in Sources */,
 				87C4139114194E6E0009800C /* DDXMLElement.m in Sources */,
 				87C4139214194E6E0009800C /* DDXMLNode.m in Sources */,
-				87353C73147DEF2D0017B19F /* NSObject_KVOBlock.m in Sources */,
 				8759A82B16491D9700AC6062 /* PlayerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
