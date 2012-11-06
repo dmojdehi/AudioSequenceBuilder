@@ -31,10 +31,10 @@ typedef enum
 	double mMarkIn;
 	double mMarkOut;
 	double mVolume;
+	double mSpeed;
 	AVURLAsset *mAsset;
 	bool mIsNavigable;
 	LoopLogic *mLoopLogic;
 }
-
 +(NSURL *)findAudioFile:(NSString *)filename;
 @end

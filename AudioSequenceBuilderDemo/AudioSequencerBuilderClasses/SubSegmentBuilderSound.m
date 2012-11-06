@@ -209,6 +209,15 @@ double kUnlimitedRemaining = 999999.9;
 			mVolume = [volumeStr doubleValue];
 		}
 		
+		// a custom playback speed?
+		DDXMLNode *playbackSpeedAttr = [elem attributeForName:@"speed"];
+		mSpeed = 1.0;
+		if(playbackSpeedAttr)
+		{
+			NSString *speedStr = [playbackSpeedAttr stringValue];
+			mSpeed = [speedStr doubleValue];
+		}
+		
 		// should this insertion time be used in our next/prev map?
 		// (default is *true*!)
 		mIsNavigable = true;
@@ -338,10 +347,11 @@ double kUnlimitedRemaining = 999999.9;
 		// loop to fit elements *don't* extend their parents duration
 		if(mLoopLogic.loopMode == kLoopNone)
 		{
+			double speedMultiplier = 1.0/ mSpeed;
 #if qDurationIsReadonly
-			[parent addToMediaAndFixedPadding: mMarkOut - mMarkIn];
+			[parent addToMediaAndFixedPadding: (mMarkOut - mMarkIn) * speedMultiplier];
 #else
-			parent.durationOfMediaAndFixedPadding += mMarkOut - mMarkIn;
+			parent.durationOfMediaAndFixedPadding += (mMarkOut - mMarkIn) * speedMultiplier;
 #endif
 		}
 	}
@@ -481,8 +491,23 @@ double kUnlimitedRemaining = 999999.9;
 		else
 		{
 			// we succeeded!
+			
+			// apply any custom playback speed
+			double amountJustAdded = CMTimeGetSeconds( sourceMarkInOutTimeRange.duration );
+			if(mSpeed != 1.0)
+			{
+				CMTimeRange insertedTime = CMTimeRangeMake(insertionPos, sourceMarkInOutTimeRange.duration);
+				CMTime newDuration = CMTimeMultiplyByFloat64(sourceMarkInOutTimeRange.duration, 1.0 / mSpeed);
+				
+				[compositionAudioTrack scaleTimeRange:insertedTime toDuration:newDuration];
+				if(mHasVideo)
+					[compositionVideoTrack scaleTimeRange:insertedTime toDuration:newDuration];
+				
+				// the added amount is actually much longer
+				amountJustAdded = CMTimeGetSeconds(newDuration);
+			}
+			
 			// update the nextwrite cursor (for left-justified siblings)
-			double amountJustAdded = CMTimeGetSeconds( sourceMarkInOutTimeRange.duration);
 			
 			// accumulates time into parent's nextWritePos
 			[mLoopLogic wroteSegment:mFilename dur:amountJustAdded];
