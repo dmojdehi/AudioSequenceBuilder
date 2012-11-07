@@ -119,6 +119,8 @@ Example:
 		`<sound file="car-start" speed=".25" />`
 
 `markIn` Allows you to set a custom markIn in the source clip, specified in seconds.  The default is 0.
+
+
 `markOut` Allows you to set a custom markOut in the source clip, specified in seconds.  The default is the duration of the clip.
   For example:
 		`<sound file="car-start" markIn=".25" markOut="3.0" />`
