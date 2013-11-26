@@ -49,6 +49,7 @@
 		8783B4F6149423F600CD592D /* toneVarying10Seconds.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 87C41311141948CF0009800C /* toneVarying10Seconds.m4a */; };
 		878C05B71461EFF500A174C2 /* testNestedDurations3.xml in Resources */ = {isa = PBXBuildFile; fileRef = 878C05B61461EFF500A174C2 /* testNestedDurations3.xml */; };
 		879735671495600A005564D9 /* testParDurations.xml in Resources */ = {isa = PBXBuildFile; fileRef = 879735661495600A005564D9 /* testParDurations.xml */; };
+		87A9091A18452C3400104F45 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 87A9091918452C3400104F45 /* Default-568h@2x.png */; };
 		87C412F3141948A30009800C /* nextDisabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 87C412DF141948A30009800C /* nextDisabled.png */; };
 		87C412F4141948A30009800C /* nextDisabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 87C412E0141948A30009800C /* nextDisabled@2x.png */; };
 		87C412F5141948A30009800C /* nextEnabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 87C412E1141948A30009800C /* nextEnabled.png */; };
@@ -138,6 +139,7 @@
 		878C05B61461EFF500A174C2 /* testNestedDurations3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testNestedDurations3.xml; sourceTree = "<group>"; };
 		879735661495600A005564D9 /* testParDurations.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testParDurations.xml; sourceTree = "<group>"; };
 		87A909171845297100104F45 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
+		87A9091918452C3400104F45 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		87C412DF141948A30009800C /* nextDisabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nextDisabled.png; sourceTree = "<group>"; };
 		87C412E0141948A30009800C /* nextDisabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nextDisabled@2x.png"; sourceTree = "<group>"; };
 		87C412E1141948A30009800C /* nextEnabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nextEnabled.png; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 		8701B6AD141946D000FB5E95 = {
 			isa = PBXGroup;
 			children = (
+				87A9091918452C3400104F45 /* Default-568h@2x.png */,
 				87A909171845297100104F45 /* README.markdown */,
 				8701B6C2141946D000FB5E95 /* AudioSequenceBuilderDemo */,
 				8701B6E4141946D100FB5E95 /* AudioSequenceBuilderDemoTests */,
@@ -517,6 +520,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8701B6C7141946D000FB5E95 /* InfoPlist.strings in Resources */,
+				87A9091A18452C3400104F45 /* Default-568h@2x.png in Resources */,
 				8701B6D0141946D000FB5E95 /* MainWindow.xib in Resources */,
 				87C412F3141948A30009800C /* nextDisabled.png in Resources */,
 				87C412F4141948A30009800C /* nextDisabled@2x.png in Resources */,

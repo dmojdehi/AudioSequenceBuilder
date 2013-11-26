@@ -17,26 +17,32 @@
 char *kPlayerStatusObserverContext = "kPlayerStatusObserverContext";
 
 @interface PlayerViewController ()
-@property (nonatomic, strong) MPVolumeView *volumeView;
+@property (nonatomic, weak) IBOutlet UISlider *timeSlider;
+@property (nonatomic, weak) IBOutlet UILabel *passageTitle;
+@property (nonatomic, weak) IBOutlet UILabel *bigTimeLabel;
+@property (nonatomic, weak) IBOutlet UILabel *positionLabel;
+@property (nonatomic, weak) IBOutlet UILabel *durationLabel;
+@property (nonatomic, weak) IBOutlet UIView *volumePlaceholder;
+@property (nonatomic, weak) IBOutlet UILabel *timerDebug;
+@property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
+//@property (nonatomic, weak) MPVolumeView *volumeView;
 
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) AudioSequenceBuilder *builder;
 @property (nonatomic, strong ) NSObject *playerPeriodicObserverRef;
+
 -(void)updateTimeOnLabel: (UILabel*) label duration:(NSTimeInterval) timeUntilDone;
 -(void)buildPlayerAsync:(NSString *)xmlFilename;
 
+- (IBAction)positionSliderValueChanged:(id)sender;
+- (IBAction)positionSliderValueChangeFinished:(id)sender;
+
+- (IBAction)playPauseButtonPressed:(id)sender;
+- (IBAction)nextButtonPressed:(id)sender;
+- (IBAction)prevButtonPressed:(id)sender;
 @end
 
 @implementation PlayerViewController
-
-@synthesize timeSlider =mTimeSlider;
-@synthesize passageTitle = mPassageTitle;
-@synthesize bigTimeLabel = mBigTimeLabel;
-@synthesize positionLabel = mPositionLabel;
-@synthesize durationLabel = mDurationLabel;
-@synthesize volumePlaceholder = mVolumePlaceholder;
-@synthesize timerDebug = mTimerDebug;
-@synthesize playPauseButton = mPlayPauseButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -178,12 +184,12 @@ char *kPlayerStatusObserverContext = "kPlayerStatusObserverContext";
 	if(self.player.rate == 0.0)
 	{
 		[self.player play];
-		[mPlayPauseButton setImage:[UIImage imageNamed:@"pauseEnabled.png"] forState:UIControlStateNormal];
+		[self.playPauseButton setImage:[UIImage imageNamed:@"pauseEnabled.png"] forState:UIControlStateNormal];
 	}
 	else
 	{
 		[self.player pause];
-		[mPlayPauseButton setImage:[UIImage imageNamed:@"playEnabled.png"] forState:UIControlStateNormal];
+		[self.playPauseButton setImage:[UIImage imageNamed:@"playEnabled.png"] forState:UIControlStateNormal];
 	}
 	
 	// update the ui with our current state
@@ -227,7 +233,7 @@ char *kPlayerStatusObserverContext = "kPlayerStatusObserverContext";
 
 - (IBAction)positionSliderValueChanged:(id)sender
 {
-	[self updateTimeOnLabel:mTimerDebug duration:mTimeSlider.value];
+	[self updateTimeOnLabel:self.timerDebug duration:self.timeSlider.value];
 	
 }
 
@@ -235,7 +241,7 @@ char *kPlayerStatusObserverContext = "kPlayerStatusObserverContext";
 {
 	if(self.player)
 	{
-		CMTime newPos = CMTimeMakeWithSeconds(mTimeSlider.value, 44100);
+		CMTime newPos = CMTimeMakeWithSeconds(self.timeSlider.value, 44100);
 		[self.player seekToTime:newPos];
 	}
 	
@@ -290,7 +296,7 @@ char *kPlayerStatusObserverContext = "kPlayerStatusObserverContext";
 	[self.player addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:kPlayerStatusObserverContext];
 	
 
-	__unsafe_unretained PlayerViewController *weakSelf = self;
+	__weak PlayerViewController *weakSelf = self;
 	self.playerPeriodicObserverRef = [self.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.5, 44100) queue:nil usingBlock:^(CMTime time) {
 		
 		//

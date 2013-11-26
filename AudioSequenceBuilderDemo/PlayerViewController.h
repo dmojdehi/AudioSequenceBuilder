@@ -14,35 +14,7 @@
 @class AudioSequenceBuilder;
 
 @interface PlayerViewController : UIViewController
-{
-	IBOutlet UISlider *mTimeSlider;
-	IBOutlet UILabel *mPassageTitle;
-	
-	IBOutlet UILabel *mBigTimeLabel;
-	IBOutlet UILabel *mPositionLabel;
-	IBOutlet UILabel *mDurationLabel;
-	IBOutlet UIView *mVolumePlaceholder;
-	IBOutlet UILabel *mTimerDebug;
-	IBOutlet UIButton *mPlayPauseButton;
 
-}
-
-@property (nonatomic, strong) UISlider *timeSlider;
-@property (nonatomic, strong) UILabel *passageTitle;
-@property (nonatomic, strong) UILabel *bigTimeLabel;
-@property (nonatomic, strong) UILabel *positionLabel;
-@property (nonatomic, strong) UILabel *durationLabel;
-@property (nonatomic, strong) UIView *volumePlaceholder;
-@property (nonatomic, strong) UILabel *timerDebug;
-@property (nonatomic, strong) UIButton *playPauseButton;
-
-
-- (IBAction)positionSliderValueChanged:(id)sender;
-- (IBAction)positionSliderValueChangeFinished:(id)sender;
-
-- (IBAction)playPauseButtonPressed:(id)sender;
-- (IBAction)nextButtonPressed:(id)sender;
-- (IBAction)prevButtonPressed:(id)sender;
 
 
 @end
