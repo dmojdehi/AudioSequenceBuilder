@@ -9,7 +9,6 @@
 #import "AudioSequenceBuilderDemoTests.h"
 
 #import "AudioSequenceBuilder.h"
-#import "NSObject_KVOBlock.h"
 #import <AVFoundation/AVFoundation.h>
 #import "DDXMLDocument.h"
 
@@ -122,15 +121,7 @@
 	dispatch_group_t waitGroup = dispatch_group_create();
 	// manually indiate that something has started
 	dispatch_group_enter(waitGroup);
-	[player addKVOBlockForKeyPath:@"status" options:0 handler:^(NSString *keyPath, id object, NSDictionary *change) {
-		
-		//AVPlayerStatus playerStatus = player.status;
-		
-		
-		// manually indiate that work has finished
-		dispatch_group_leave(waitGroup);		
-		
-	}];
+	[player addObserver:self forKeyPath:@"status" options:0 context:waitGroup];
 	
 	// run for awhile until the player has finished loading
 	bool done = false;
@@ -243,6 +234,16 @@
 
 	
 	
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	
+	if([object isKindOfClass:[AVPlayer class]])
+	{
+		dispatch_group_t waitGroup = context;
+		dispatch_group_leave(waitGroup);
+	}
 }
 
 @end

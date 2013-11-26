@@ -47,7 +47,13 @@
 
 
 @interface TrackStack : NSObject
-@property (nonatomic, readonly, strong) AVMutableCompositionTrack* currentTrack;
-@property (nonatomic, assign) int currentTrackIndex;
+//@property (nonatomic, readonly, strong) AVMutableCompositionTrack* currentAudioTrack;
+//@property (nonatomic, readonly, strong) AVMutableCompositionTrack* currentVideoTrack;
+@property (nonatomic, assign) int currentAudioTrackIndex;
+@property (nonatomic, assign) int currentVideoTrackIndex;
+@property (nonatomic, assign) BOOL isParMode;
 @property (nonatomic, readonly, strong) AVMutableComposition *composition;
+-(AVMutableCompositionTrack*) getOrCreateNextAudioTrack;
+-(AVMutableCompositionTrack*) getOrCreateNextVideoTrack;
+
 @end

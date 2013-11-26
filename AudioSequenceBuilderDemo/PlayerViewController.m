@@ -352,7 +352,6 @@ char *kPlayerStatusObserverContext = "kPlayerStatusObserverContext";
 }
 
 
-
 -(void)updateTimeOnLabel: (UILabel*) label duration:(NSTimeInterval) timeUntilDone
 {
 	// under 3 hours?

@@ -163,7 +163,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 	return remaining;
 }
 
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoTrack:(AVMutableCompositionTrack*)compositionTrackIgnored
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
 {	
 	// at the beginning of this pass we remember our start pos
 	double beginTimeInParent = 0.0;
@@ -178,27 +178,26 @@ const double kDoesntHaveFixedDuration = -1.0;
 	[mChildBuilders enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		SubSegmentBuilder *child = (SubSegmentBuilder *)obj;
 		
-		AVMutableCompositionTrack *compositionTrackToUse = builder.trackStack.currentTrack ;
-		int savedTrackIndex = builder.trackStack.currentTrackIndex;
+
+		// set the 'par' mode on the track stack
+		// (media elems will create new tracks or reuse existing ones depending on this setting!)
+		builder.trackStack.isParMode = mIsParallel;
+		
+		//AVMutableCompositionTrack *compositionTrackToUse = builder.trackStack.currentTrack ;
+		int savedAudioTrackIndex = builder.trackStack.currentAudioTrackIndex;
+		int savedVideoTrackIndex = builder.trackStack.currentVideoTrackIndex;
 		if(mIsParallel)
 		{
 			mNextWritePos = beginTimeInParent;
-			
-			
-			//mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
-			
 		}
-		[child passTwoApplyMedia:builder intoTrack:compositionTrackToUse];
 		
-		if(mIsParallel)
-		{
-			// advance (but don't yet allocate) the track stack
-			builder.trackStack.currentTrackIndex += 1;
-		}
-		else
+		[child passTwoApplyMedia:builder];
+		
+		if(!mIsParallel)
 		{
 			//seq's restore the track index after child processing
-			builder.trackStack.currentTrackIndex = savedTrackIndex;
+			builder.trackStack.currentAudioTrackIndex = savedAudioTrackIndex;
+			builder.trackStack.currentVideoTrackIndex = savedVideoTrackIndex;
 		}
 		
 	}];
