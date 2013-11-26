@@ -21,17 +21,12 @@
 	IBOutlet UILabel *mBigTimeLabel;
 	IBOutlet UILabel *mPositionLabel;
 	IBOutlet UILabel *mDurationLabel;
-	AVPlayer	 *mPlayer;
-	AudioSequenceBuilder *mBuilder;
 	IBOutlet UIView *mVolumePlaceholder;
-	MPVolumeView *mVolumeView;
 	IBOutlet UILabel *mTimerDebug;
 	IBOutlet UIButton *mPlayPauseButton;
 
 }
 
-@property (nonatomic, strong) AVPlayer *player;
-@property (nonatomic, strong) AudioSequenceBuilder *builder;
 @property (nonatomic, strong) UISlider *timeSlider;
 @property (nonatomic, strong) UILabel *passageTitle;
 @property (nonatomic, strong) UILabel *bigTimeLabel;

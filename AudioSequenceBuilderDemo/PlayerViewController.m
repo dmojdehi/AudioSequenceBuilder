@@ -12,19 +12,22 @@
 #import <MediaPlayer/MPVolumeView.h>
 #import "AudioSequenceBuilder.h"
 #import "DDXML.h"
-#import "NSObject_KVOBlock.h"
-//#import "NSObject+BlockObservation.h"
 
 
-@interface PlayerViewController (Private)
+char *kPlayerStatusObserverContext = "kPlayerStatusObserverContext";
+
+@interface PlayerViewController ()
+@property (nonatomic, strong) MPVolumeView *volumeView;
+
+@property (nonatomic, strong) AVPlayer *player;
+@property (nonatomic, strong) AudioSequenceBuilder *builder;
+@property (nonatomic, strong ) NSObject *playerPeriodicObserverRef;
 -(void)updateTimeOnLabel: (UILabel*) label duration:(NSTimeInterval) timeUntilDone;
 -(void)buildPlayerAsync:(NSString *)xmlFilename;
 
 @end
 
 @implementation PlayerViewController
-@synthesize player = mPlayer;
-@synthesize builder = mBuilder;
 
 @synthesize timeSlider =mTimeSlider;
 @synthesize passageTitle = mPassageTitle;
@@ -44,18 +47,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-	if(mPlayer)
-	{
-		[mPlayer pause];
-	}
-	
-	
-	mTimeSlider = nil;
-	mBigTimeLabel = nil;
-	
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -125,27 +116,22 @@
 	}
 	
 	NSString *xmlFile = @"CarSequenceWithBackground";
-	//NSString *xmlFile = @"CarSequence";
-	
-	//double durationInSeconds = 30.0;
-	//NSString *removeTags = nil;
 
 //	MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //	hud.labelText = @"Loading...";
 
 	// make the player
-	NSBlockOperation *buildIt = [NSBlockOperation blockOperationWithBlock:^(void) {
-		
-		@try 
+	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+		@try
 		{
 			[self buildPlayerAsync:xmlFile];
-			
+
 		}
-		@catch (NSException *exception) 
+		@catch (NSException *exception)
 		{
 			
 		}
-		@finally 
+		@finally
 		{
 			// dismiss the progress bar
 //			dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -154,8 +140,6 @@
 		}
 		
 	}];
-	
-	[[NSOperationQueue mainQueue] addOperation:buildIt];
 	
 	
 }
@@ -167,6 +151,20 @@
     // e.g. self.myOutlet = nil;
 }
 
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+	if(self.isBeingDismissed || self.isMovingFromParentViewController)
+	{
+		if(self.playerPeriodicObserverRef)
+			[self.player removeTimeObserver:self.playerPeriodicObserverRef];
+		self.playerPeriodicObserverRef = nil;
+		
+		[self.player removeObserver:self forKeyPath:@"status" context:kPlayerStatusObserverContext];
+	}
+}
+
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
@@ -177,14 +175,14 @@
 - (IBAction)playPauseButtonPressed:(id)sender
 {
 	// if we're paused, play
-	if(mPlayer.rate == 0.0)
+	if(self.player.rate == 0.0)
 	{
-		[mPlayer play];
+		[self.player play];
 		[mPlayPauseButton setImage:[UIImage imageNamed:@"pauseEnabled.png"] forState:UIControlStateNormal];
 	}
 	else
 	{
-		[mPlayer pause];
+		[self.player pause];
 		[mPlayPauseButton setImage:[UIImage imageNamed:@"playEnabled.png"] forState:UIControlStateNormal];
 	}
 	
@@ -194,9 +192,9 @@
 
 - (IBAction)nextButtonPressed:(id)sender 
 {
-	double currentPos = CMTimeGetSeconds( mPlayer.currentTime );
+	double currentPos = CMTimeGetSeconds( self.player.currentTime );
 	// find where we are in the navigation array, and go to the next one
-	[mBuilder.navigationTimes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+	[self.builder.navigationTimes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		// 
 		NSNumber *navPoint = (NSNumber *)obj;
 		if([navPoint doubleValue] > currentPos)
@@ -204,16 +202,16 @@
 			// this is the first greater time, so we'll seek to it!
 			*stop = YES;
 			CMTime newPos = CMTimeMakeWithSeconds([navPoint doubleValue], 44100);
-			[mPlayer seekToTime:newPos];
+			[self.player seekToTime:newPos];
 		}
 	}];
 }
 
 - (IBAction)prevButtonPressed:(id)sender 
 {
-	double currentPos = CMTimeGetSeconds( mPlayer.currentTime );
+	double currentPos = CMTimeGetSeconds( self.player.currentTime );
 	// find where we are in the navigation array, and go to the next one
-	[mBuilder.navigationTimes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+	[self.builder.navigationTimes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		// 
 		NSNumber *navPoint = (NSNumber *)obj;
 		if([navPoint doubleValue] < (currentPos - 1.5))
@@ -221,7 +219,7 @@
 			// this is the first lesser time, so we'll seek to it!
 			*stop = YES;
 			CMTime newPos = CMTimeMakeWithSeconds([navPoint doubleValue], 44100);
-			[mPlayer seekToTime:newPos];
+			[self.player seekToTime:newPos];
 		}
 	}];
 	
@@ -235,10 +233,10 @@
 
 - (IBAction)positionSliderValueChangeFinished:(id)sender
 {
-	if(mPlayer)
+	if(self.player)
 	{
 		CMTime newPos = CMTimeMakeWithSeconds(mTimeSlider.value, 44100);
-		[mPlayer seekToTime:newPos];
+		[self.player seekToTime:newPos];
 	}
 	
 }
@@ -289,52 +287,62 @@
 	self.builder = builder;
 	
 	// once it's ready, begin playback
+	[self.player addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:kPlayerStatusObserverContext];
+	
+
 	__unsafe_unretained PlayerViewController *weakSelf = self;
-	[self.player addKVOBlockForKeyPath:@"status" options:0 handler:^(NSString *keyPath, id obj, NSDictionary *change) {
-		AVPlayerStatus playerStatus = weakSelf.player.status;
+	self.playerPeriodicObserverRef = [self.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.5, 44100) queue:nil usingBlock:^(CMTime time) {
 		
+		//
+		double duration = CMTimeGetSeconds( weakSelf.player.currentItem.asset.duration );
+		double pos =  CMTimeGetSeconds( time );
+		double remaining = duration - pos;
+		if(remaining < 0.0)
+			remaining = 0.0;
+		
+		// some controls shouldn't be updated while we're dragging the position indicator
+		if(weakSelf.timeSlider.state == UIControlStateNormal)
+		{
+			weakSelf.timeSlider.value = pos;
+			weakSelf.timerDebug.text = [NSString stringWithFormat:@"%.2f", pos];
+			[weakSelf updateTimeOnLabel:weakSelf.bigTimeLabel duration:remaining];
+		}
+		
+		[weakSelf updateTimeOnLabel:weakSelf.positionLabel duration: pos];
+		[weakSelf updateTimeOnLabel:weakSelf.durationLabel duration: duration];
+		
+		if(weakSelf.player.rate == 0.0)
+			[weakSelf.playPauseButton setImage:[UIImage imageNamed:@"playEnabled.png"] forState:UIControlStateNormal];
+		else
+			[weakSelf.playPauseButton setImage:[UIImage imageNamed:@"pauseEnabled.png"] forState:UIControlStateNormal];
+		
+	}];
+
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	if(context == kPlayerStatusObserverContext)
+	{
+		AVPlayerStatus playerStatus = self.player.status;
 		if(playerStatus == AVPlayerStatusReadyToPlay)
 		{
 			// make the player
 			// make the new view
 			// update the slider length & pos
-			double duration = CMTimeGetSeconds( weakSelf.player.currentItem.asset.duration );
-			weakSelf.timeSlider.maximumValue = duration;
-			__unsafe_unretained PlayerViewController *weakSelf2 = weakSelf;
-			[weakSelf.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.5, 44100) queue:nil usingBlock:^(CMTime time) {
-				
-				//
-				double pos =  CMTimeGetSeconds( time );
-				double remaining = duration - pos;
-				if(remaining < 0.0)
-					remaining = 0.0;
-				
-				// some controls shouldn't be updated while we're dragging the position indicator
-				if(weakSelf2.timeSlider.state == UIControlStateNormal)
-				{
-					weakSelf2.timeSlider.value = pos;
-					weakSelf2.timerDebug.text = [NSString stringWithFormat:@"%.2f", pos];
-					[weakSelf2 updateTimeOnLabel:weakSelf2.bigTimeLabel duration:remaining];
-				}
-				
-				[weakSelf2 updateTimeOnLabel:weakSelf2.positionLabel duration: pos];
-				[weakSelf2 updateTimeOnLabel:weakSelf2.durationLabel duration: duration];
-				
-				if(weakSelf2.player.rate == 0.0)
-					[weakSelf2.playPauseButton setImage:[UIImage imageNamed:@"playEnabled.png"] forState:UIControlStateNormal];
-				else
-					[weakSelf2.playPauseButton setImage:[UIImage imageNamed:@"pauseEnabled.png"] forState:UIControlStateNormal];
-				
-			}];
-			
+			double duration = CMTimeGetSeconds( self.player.currentItem.asset.duration );
+			self.timeSlider.maximumValue = duration;
+
 			//  play it!
-			[weakSelf.player play];
+			[self.player play];
+			
 		}
-		else
-		{
-		}
-	}];
-	
+	}
+	else
+	{
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
+
 }
 
 
