@@ -11,30 +11,40 @@
 #import "DDXML.h"
 #import "SubSegmentBuilder.h"
 
+@interface AudioSequenceBuilder()
+@property (nonatomic, strong) NSMutableDictionary	*elementDictionary;
+@property (nonatomic, strong) NSMutableDictionary	*audioEnvelopesForTracks;
+@property (nonatomic, strong) NSMutableArray	*navigationTimesMutable;
+
+@end
 @implementation AudioSequenceBuilder
-@synthesize document = mDocument;
-@synthesize navigationTimes = mNavigationTimes;
-@synthesize trackStack = mTrackStack;
+//@synthesize document = mDocument;
+//@synthesize navigationTimes = mNavigationTimes;
+//@synthesize trackStack = mTrackStack;
 - (id)init
 {
     self = [super init];
     if (self) {
         // Initialization code here.
-		mTrackStack = [[TrackStack alloc]init];
-		mElementDictionary = [[NSMutableDictionary alloc]init];
-		mNavigationTimes = [[NSMutableArray alloc]init];
-		mAudioEnvelopesForTracks = [[NSMutableDictionary alloc]init];
+		_trackStack = [[TrackStack alloc]init];
+		_elementDictionary = [[NSMutableDictionary alloc]init];
+		_navigationTimesMutable = [[NSMutableArray alloc]init];
+		_audioEnvelopesForTracks = [[NSMutableDictionary alloc]init];
 //		mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
     }
     
     return self;
+}
+-(NSArray*)navigationTimes
+{
+	return self.navigationTimesMutable;
 }
 
 
 -(void)loadFromXmlString:(NSString*)xmlString
 {	
 	NSError *err = nil;
-	mDocument = [[DDXMLDocument alloc] initWithXMLString:xmlString options:0 error:&err ];
+	_document = [[DDXMLDocument alloc] initWithXMLString:xmlString options:0 error:&err ];
 }
 
 -(void)loadDocument:(NSURL*)documentToLoad
@@ -43,20 +53,20 @@
 	NSData *docData = [NSData dataWithContentsOfURL:  documentToLoad];
 	
 	NSError *err = nil;
-	mDocument = [[DDXMLDocument alloc] initWithData:docData options:0 error:&err];
+	_document = [[DDXMLDocument alloc] initWithData:docData options:0 error:&err];
 	
 }
 
 -(AVMutableAudioMixInputParameters*)audioEnvelopeForTrack:(AVMutableCompositionTrack*)compositionTrack
 {
 	int trackId = compositionTrack.trackID;
-	AVMutableAudioMixInputParameters *envelope = [mAudioEnvelopesForTracks objectForKey:[NSNumber numberWithInt:trackId]];
+	AVMutableAudioMixInputParameters *envelope = self.audioEnvelopesForTracks[@(trackId)];
 	if(!envelope)
 	{
 		// make a new audio envelope for this track
 		envelope = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:compositionTrack];
 		// remember it
-		[mAudioEnvelopesForTracks setObject:envelope forKey:[NSNumber numberWithInt:trackId]];
+		self.audioEnvelopesForTracks[@(trackId)] = envelope;
 	}
 	return envelope;
 }
@@ -67,7 +77,7 @@
 	// now make something more complicated
 	
 	// recursively descend through all the elements in DOC
-	DDXMLElement *elem = mDocument.rootElement;
+	DDXMLElement *elem = self.document.rootElement;
 	
 	// recurses through the tree, building the segments below it
 	SubSegmentBuilder *segBuilder = [SubSegmentBuilder makeAudioSegmentBuilderFor:elem inContainer:nil];
@@ -80,11 +90,11 @@
 	
 	// get the audio envelopes, and apply them all
 	AVMutableAudioMix *theAudioMix = [AVMutableAudioMix audioMix];
-	NSArray *audioMixParameters = [mAudioEnvelopesForTracks allValues];
+	NSArray *audioMixParameters = [self.audioEnvelopesForTracks allValues];
 	theAudioMix.inputParameters = audioMixParameters;	
 	
 	// make an immutable snapshot of a mutable composition for playback or inspection
-	AVComposition *playerItemForSnapshottedComposition = [mTrackStack.composition copy];
+	AVComposition *playerItemForSnapshottedComposition = [self.trackStack.composition copy];
 	AVPlayerItem *playerItem = [[AVPlayerItem alloc] initWithAsset:playerItemForSnapshottedComposition];
 	playerItem.audioMix = theAudioMix;
 	audioPlayer = [AVPlayer playerWithPlayerItem:playerItem];
@@ -95,7 +105,7 @@
 	[self addNavigationTime:endPos ]; 
 	
 	// sort the navigation times
-	[mNavigationTimes sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+	[self.navigationTimesMutable sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		NSNumber *num1 = (NSNumber*)obj1;
 		NSNumber *num2 = (NSNumber*)obj2;
 		if([num1 doubleValue] < [num2 doubleValue])
@@ -129,7 +139,7 @@
 		// first, look to see if we've already parsed this element
 		
 		NSValue *elemAsValue= [NSValue valueWithNonretainedObject:elem];
-		NSMutableArray *parsedArrayInReverseOrder = [mElementDictionary objectForKey:elemAsValue];
+		NSMutableArray *parsedArrayInReverseOrder = self.elementDictionary[elemAsValue];
 		if(!parsedArrayInReverseOrder)
 		{
 			// not already parsed?
@@ -140,10 +150,10 @@
 			{
 				// get this field value, and store it in our list-of-args
 				double fieldValue = [AudioSequenceBuilder parseTimecode: field];
-				[parsedArrayInReverseOrder insertObject:[NSNumber numberWithDouble:fieldValue] atIndex:0 ];
+				[parsedArrayInReverseOrder insertObject:@(fieldValue) atIndex:0 ];
 			}
 			// save the list of 'em back
-			[mElementDictionary setObject:parsedArrayInReverseOrder forKey:elemAsValue];
+			self.elementDictionary[elemAsValue] = parsedArrayInReverseOrder;
 			
 		}
 		
@@ -182,7 +192,7 @@
 
 -(void)addNavigationTime:(double)time
 {
-	[mNavigationTimes addObject:[NSNumber numberWithDouble:time]];
+	[self.navigationTimesMutable addObject:@(time)];
 }
 
 

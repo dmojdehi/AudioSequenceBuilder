@@ -287,7 +287,7 @@ double kUnlimitedRemaining = 999999.9;
 		
 		
 		// have we already loaded this asset?  just reuse it, please!
-		mAsset = [sAudioTracksByName objectForKey:[assetUrl absoluteString]];
+		mAsset = sAudioTracksByName[[assetUrl absoluteString]];
 		if(mAsset)
 		{
 			NSLog(@"... loaded asset tracks from cache!");
@@ -295,9 +295,8 @@ double kUnlimitedRemaining = 999999.9;
 		else
 		{
 			NSLog(@"... loading asset tracks (not from cache)");
-			mAsset = [AVURLAsset URLAssetWithURL:assetUrl options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],
-																   AVURLAssetPreferPreciseDurationAndTimingKey, nil] ];
-			[sAudioTracksByName setObject:mAsset forKey:[assetUrl absoluteString]];
+			mAsset = [AVURLAsset URLAssetWithURL:assetUrl options:@{AVURLAssetPreferPreciseDurationAndTimingKey: @YES} ];
+			sAudioTracksByName[[assetUrl absoluteString]] = mAsset;
 			//mAsset = [AVURLAsset URLAssetWithURL:assetUrl options:nil];
 		}
 		if(!mAsset)
@@ -375,7 +374,7 @@ double kUnlimitedRemaining = 999999.9;
 	//	{
 	//		int z = 0;
 	//	}
-	AVAssetTrack *sourceAudioTrack = [[mAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+	AVAssetTrack *sourceAudioTrack = [mAsset tracksWithMediaType:AVMediaTypeAudio][0];
 	if(!sourceAudioTrack)
 	{
 		NSLog(@"...  FAILED to add sound.  There we no audio tracks in the asset");
@@ -385,7 +384,7 @@ double kUnlimitedRemaining = 999999.9;
 	AVAssetTrack *sourceVideoTrack = nil;
 	if(mHasVideo)
 	{
-		sourceVideoTrack = [[mAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+		sourceVideoTrack = [mAsset tracksWithMediaType:AVMediaTypeVideo][0];
 		if(!sourceVideoTrack)
 		{
 			NSLog(@"...  FAILED to add video.  There we no video tracks in the asset");
@@ -548,7 +547,7 @@ double kUnlimitedRemaining = 999999.9;
 }
 +(NSURL *)findAudioFile:(NSString *)filename
 {
-	return [SubSegmentBuilderSound findAudioFileOfNames:[NSArray arrayWithObject:filename]];
+	return [SubSegmentBuilderSound findAudioFileOfNames:@[filename]];
 	
 }
 

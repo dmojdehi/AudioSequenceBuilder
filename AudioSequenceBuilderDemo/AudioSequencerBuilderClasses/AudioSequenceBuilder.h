@@ -18,14 +18,14 @@
 
 
 @interface AudioSequenceBuilder : NSObject
-{
-	DDXMLDocument *mDocument;
-	NSMutableDictionary	*mElementDictionary;
-	NSMutableArray *mNavigationTimes;
-
-	NSMutableDictionary *mAudioEnvelopesForTracks;
-	TrackStack *mTrackStack;
-}
+//{
+//	DDXMLDocument *mDocument;
+//	NSMutableDictionary	*mElementDictionary;
+//	NSMutableArray *mNavigationTimes;
+//
+//	NSMutableDictionary *mAudioEnvelopesForTracks;
+//	TrackStack *mTrackStack;
+//}
 
 @property (nonatomic, readonly) DDXMLDocument *document;
 @property (nonatomic, readonly) NSArray *navigationTimes;
