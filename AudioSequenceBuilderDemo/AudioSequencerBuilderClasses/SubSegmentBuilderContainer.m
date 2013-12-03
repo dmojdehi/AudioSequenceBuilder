@@ -163,8 +163,8 @@ const double kDoesntHaveFixedDuration = -1.0;
 	return remaining;
 }
 
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
-{	
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)audioTrackIgnored andVideoTrack:(AVMutableCompositionTrack*)videoTrackIgnored
+{
 	// at the beginning of this pass we remember our start pos
 	double beginTimeInParent = 0.0;
 	if(mParent)
@@ -179,6 +179,36 @@ const double kDoesntHaveFixedDuration = -1.0;
 		SubSegmentBuilder *child = (SubSegmentBuilder *)obj;
 		
 
+#if 1
+		AVMutableCompositionTrack *compositionAudioTrackToUse = builder.trackStack.currentAudioTrack;
+		AVMutableCompositionTrack *compositionVideoTrackToUse = builder.trackStack.currentVideoTrack;
+		//AVMutableCompositionTrack *compositionTrackToUse = builder.trackStack.currentTrack ;
+		int savedVideoTrackIndex = builder.trackStack.currentVideoTrackIndex;
+		int savedAudioTrackIndex = builder.trackStack.currentAudioTrackIndex;
+		if(mIsParallel)
+		{
+			mNextWritePos = beginTimeInParent;
+			//mNextLocalWritePos = beginTimeInParent;
+						
+			//mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
+			
+		}
+		[child passTwoApplyMedia:builder intoAudioTrack:compositionAudioTrackToUse andVideoTrack:compositionVideoTrackToUse];
+		//[child passTwoApplyMedia:builder intoTrack:compositionTrackToUse];
+		
+		if(mIsParallel)
+		{
+			// advance (but don't yet allocate) the track stack
+			builder.trackStack.currentAudioTrackIndex += 1;
+		}
+		else
+		{
+			//seq's restore the track index after child processing
+			builder.trackStack.currentAudioTrackIndex = savedAudioTrackIndex;
+		}
+		
+		
+#else
 		// set the 'par' mode on the track stack
 		// (media elems will create new tracks or reuse existing ones depending on this setting!)
 		builder.trackStack.isParMode = mIsParallel;
@@ -199,7 +229,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 			builder.trackStack.currentAudioTrackIndex = savedAudioTrackIndex;
 			builder.trackStack.currentVideoTrackIndex = savedVideoTrackIndex;
 		}
-		
+#endif
 	}];
 	
 	// update our parent to our last write pos

@@ -29,7 +29,8 @@
 +(SubSegmentBuilder*)makeAudioSegmentBuilderFor:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent;
 
 -(void)passOneResolvePadding;
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder;
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)audioTrack andVideoTrack:(AVMutableCompositionTrack*)videoTrack;
+//-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder;
 
 @end
 

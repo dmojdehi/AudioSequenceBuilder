@@ -76,7 +76,7 @@
 	[segBuilder passOneResolvePadding];
 	
 	// final pass: write the media out!
-	[segBuilder passTwoApplyMedia:self];
+	[segBuilder passTwoApplyMedia:self intoAudioTrack:nil andVideoTrack:nil];
 	
 	// get the audio envelopes, and apply them all
 	AVMutableAudioMix *theAudioMix = [AVMutableAudioMix audioMix];
@@ -251,52 +251,78 @@
 @property (nonatomic, strong) NSMutableArray *videoTracks;
 @end
 @implementation TrackStack
-@synthesize composition;
-@synthesize currentAudioTrackIndex;
-@synthesize currentVideoTrackIndex;
-@synthesize audioTracks, videoTracks;
+//@synthesize composition;
+//@synthesize currentAudioTrackIndex;
+//@synthesize currentVideoTrackIndex;
+//@synthesize audioTracks, videoTracks;
 -(id)init
 {
 	self=[super init];
 	if(self)
 	{
-		composition = [AVMutableComposition composition];
-		currentAudioTrackIndex = 0;
-		currentVideoTrackIndex = 0;
-		audioTracks =[[NSMutableArray alloc]init];
-		videoTracks =[[NSMutableArray alloc]init];
+		_composition = [AVMutableComposition composition];
+		_currentAudioTrackIndex = 0;
+		_currentVideoTrackIndex = 0;
+		_audioTracks = [[NSMutableArray alloc]init];
+		_videoTracks = [[NSMutableArray alloc]init];
 	}
 	return self;
 }
--(AVMutableCompositionTrack*) getOrCreateNextAudioTrack
-{
-	// get (or make) the current track
-	if(currentAudioTrackIndex >= [audioTracks count])
-	{
-		AVMutableCompositionTrack *newtrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-		[audioTracks addObject:newtrack];
 
-	}
-	AVMutableCompositionTrack *track = [audioTracks objectAtIndex:currentAudioTrackIndex];
-	if(_isParMode)
-		currentAudioTrackIndex++;
-	   
-	return track;
-}
--(AVMutableCompositionTrack*) getOrCreateNextVideoTrack
+-(AVMutableCompositionTrack*) currentAudioTrack
 {
 	// get (or make) the current track
-	if(currentVideoTrackIndex >= [videoTracks count])
+	if(self.currentAudioTrackIndex >= self.audioTracks.count)
 	{
-		AVMutableCompositionTrack *newtrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-		[videoTracks addObject:newtrack];
+		AVMutableCompositionTrack *newtrack = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+		[self.audioTracks addObject:newtrack];
 		
 	}
 	
-	AVMutableCompositionTrack *track = [videoTracks objectAtIndex:currentVideoTrackIndex];
-	if(_isParMode)
-		currentVideoTrackIndex++;
-
-	return track;
+	return self.audioTracks[self.currentAudioTrackIndex];
 }
+-(AVMutableCompositionTrack*) currentVideoTrack
+{
+	// get (or make) the current track
+	if(self.currentVideoTrackIndex >= self.videoTracks.count)
+	{
+		AVMutableCompositionTrack *newtrack = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+		[self.videoTracks addObject:newtrack];
+		
+	}
+	
+	return self.videoTracks[self.currentVideoTrackIndex];
+}
+
+//-(AVMutableCompositionTrack*) getOrCreateNextAudioTrack
+//{
+//	// get (or make) the current track
+//	if(currentAudioTrackIndex >= [audioTracks count])
+//	{
+//		AVMutableCompositionTrack *newtrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+//		[audioTracks addObject:newtrack];
+//
+//	}
+//	AVMutableCompositionTrack *track = [audioTracks objectAtIndex:currentAudioTrackIndex];
+//	if(_isParMode)
+//		currentAudioTrackIndex++;
+//	   
+//	return track;
+//}
+//-(AVMutableCompositionTrack*) getOrCreateNextVideoTrack
+//{
+//	// get (or make) the current track
+//	if(currentVideoTrackIndex >= [videoTracks count])
+//	{
+//		AVMutableCompositionTrack *newtrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+//		[videoTracks addObject:newtrack];
+//		
+//	}
+//	
+//	AVMutableCompositionTrack *track = [videoTracks objectAtIndex:currentVideoTrackIndex];
+//	if(_isParMode)
+//		currentVideoTrackIndex++;
+//
+//	return track;
+//}
 @end

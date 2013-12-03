@@ -168,7 +168,7 @@
 {
 	
 }
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)audioTrack andVideoTrack:(AVMutableCompositionTrack*)videoTrack
 {
 }
 

@@ -13,6 +13,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 const double kFadeOutDuration = 2.0;
+const double kFadeInDuration = 0.1;
 
 @interface LoopLogic : NSObject
 {
@@ -359,14 +360,9 @@ double kUnlimitedRemaining = 999999.9;
 }
 
 
--(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)compositionAudioTrack andVideoTrack:(AVMutableCompositionTrack*)compositionVideoTrack
 {
 	bool mHasVideo = [[mAsset tracksWithMediaType:AVMediaTypeVideo] count] > 0;
-
-	AVMutableCompositionTrack *compositionAudioTrack = [builder.trackStack getOrCreateNextAudioTrack];
-	AVMutableCompositionTrack *compositionVideoTrack = nil;
-	if(mHasVideo)
-		compositionVideoTrack = [builder.trackStack getOrCreateNextVideoTrack];
 	
 #if DEBUG
 	int trackID  = compositionAudioTrack.trackID;
@@ -431,7 +427,18 @@ double kUnlimitedRemaining = 999999.9;
 	{
 		CMTime insertionPos = CMTimeMakeWithSeconds(mParent.nextWritePos, 44100);
 		CMTime markOutToUse = markOut;
-		
+		double moreRemaining = [mLoopLogic moreRemaining];
+
+		if(moreRemaining < kFadeOutDuration + kFadeInDuration)
+		{
+			// we get here if there's just too little time to fade in and out!
+			// so don't even write the audio segment!
+#if DEBUG
+			NSLog(@"... remaining duration is too short (%.2f), *not* adding the sound", moreRemaining);
+#endif
+			break;
+		}
+
 		// apply at the audio ramp for this clip
 
 		AVMutableAudioMixInputParameters *audioEnvelope = [builder audioEnvelopeForTrack:compositionAudioTrack];
@@ -446,21 +453,42 @@ double kUnlimitedRemaining = 999999.9;
 		
 		// TODO don't write past the end time
 		// limit the source range by the amount remaining in the output!
-		double moreRemaining = [mLoopLogic moreRemaining];
-		if(CMTimeGetSeconds(sourceMarkInOutTimeRange.duration) > moreRemaining )
+		if(mLoopLogic.loopMode != kLoopNone &&
+		   (CMTimeGetSeconds(sourceMarkInOutTimeRange.duration) > moreRemaining) )
 		{
 			// we get here if a looping track needs to be truncated to fit a parent
 			sourceMarkInOutTimeRange.duration = CMTimeMakeWithSeconds(moreRemaining, 44100);
 			
 			// also, fade out over the last second or so
 			CMTime fadeOutBeginTime = CMTimeAdd( insertionPos, CMTimeMakeWithSeconds(moreRemaining - kFadeOutDuration, 44100) );
-			CMTimeRange fadeOutRange = CMTimeRangeMake(fadeOutBeginTime, CMTimeMakeWithSeconds(kFadeOutDuration, 44100));
-			NSString *fadeOutDesc = (__bridge NSString *) CMTimeRangeCopyDescription(kCFAllocatorDefault, fadeOutRange);
-			[audioEnvelope setVolumeRampFromStartVolume:mVolume toEndVolume:0.0 timeRange:fadeOutRange];
+			CMTime fadeOutDuration = CMTimeMakeWithSeconds( MIN( kFadeOutDuration, moreRemaining - kFadeInDuration), 44100 );
+			CMTimeRange fadeOutRange = CMTimeRangeMake(fadeOutBeginTime, fadeOutDuration);
+
+#if DEBUG
+			NSLog(@"...  applying fade out vol:%.1f to 0, at time %.4f (duration %.4f)", mVolume, CMTimeGetSeconds(fadeOutRange.start), CMTimeGetSeconds(fadeOutRange.duration));
+#endif
+
+			@try {
+				[audioEnvelope setVolumeRampFromStartVolume:mVolume toEndVolume:0.0 timeRange:fadeOutRange];
+				
+			}
+			@catch (NSException *exception) {
+				NSString *fadeOutDesc = (__bridge NSString *) CMTimeRangeCopyDescription(kCFAllocatorDefault, fadeOutRange);
+				// dump the existing
+				NSLog(@"FAILURE!! Error writing envelope for track %@ at time range %@", compositionAudioTrack, fadeOutDesc);
+				
+			}
 
 			//[audioMix setVolumeRampFromStartVolume:0.0 toEndVolume:volume timeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(5.0, 44100))];
 		}
-		
+		else
+		{
+			// set the volume for the end, too
+			CMTime time = CMTimeAdd( insertionPos, sourceMarkInOutTimeRange.duration);
+			NSLog(@"...  applying end vol vol:%.1f to 0, at time %.4f", mVolume, CMTimeGetSeconds(time));
+			[audioEnvelope setVolume:mVolume atTime:CMTimeAdd( insertionPos, sourceMarkInOutTimeRange.duration)];
+		}
+
 		
 		// if this sound is to be used in next/prev navigation, add it now
 		if(builder && mIsNavigable)
