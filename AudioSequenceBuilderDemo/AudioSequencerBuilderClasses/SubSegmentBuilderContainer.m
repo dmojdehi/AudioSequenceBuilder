@@ -205,6 +205,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 		{
 			//seq's restore the track index after child processing
 			builder.trackStack.currentAudioTrackIndex = savedAudioTrackIndex;
+			builder.trackStack.currentVideoTrackIndex = savedVideoTrackIndex;
 		}
 		
 		
