@@ -13,30 +13,31 @@
 
 const double kDoesntHaveFixedDuration = -1.0;
 
+@interface SubSegmentBuilderContainer()
+@property (nonatomic, assign) double greatestNextWritePos;
+@property (nonatomic, assign) double nextWritePosInternal;
+@property (nonatomic, assign) double durationOfMediaAndFixedPaddingInternal;
+#if qDurationIsReadonly
+@property (nonatomic, assign) double greatestDurationOfMediaAndFixedPadding;
+#endif
+@end
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation SubSegmentBuilderContainer
-@synthesize childBuilders = mChildBuilders;
-@synthesize playCount = mPlayCount;
-@synthesize durationOfMediaAndFixedPadding = mDurationOfMediaAndFixedPadding;
-@synthesize totalOfAllocatedRatios = mTotalOfAllocatedRatios;
-@synthesize optionalFixedDuration = mOptionalFixedDuration;
-@synthesize nextWritePos = mNextWritePos;
-@synthesize isParallel = mIsParallel;
 
 -(id)initWithElem:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent
 {
 	if((self = [super initWithElem:elem inContainer:parent]))
 	{
-		mChildBuilders = [[NSMutableArray alloc]init];
-		mNextWritePos = 0.0;
+		_childBuilders = [[NSMutableArray alloc]init];
+		_nextWritePosInternal = 0.0;
 		
 		NSString *nodeName = elem.name;
-		mIsParallel = false;
+		_isParallel = NO;
 		if (nodeName && [nodeName compare:@"par"] == 0)
-			mIsParallel = true;
+			_isParallel = YES;
 		
 		// get the fixed duration arg, if present
-		mOptionalFixedDuration = -1.0;
+		_optionalFixedDuration = -1.0;
 		DDXMLNode *durationAttr = [elem attributeForName:@"duration"];
 		if(durationAttr)
 		{
@@ -44,17 +45,17 @@ const double kDoesntHaveFixedDuration = -1.0;
 			// parse it from timecode (mm:ss.mmmm) to seconds
 			double fixedDuration = [AudioSequenceBuilder parseTimecode:durationAttrStr];
 			// this container has a set size!  don't mess with it
-			mOptionalFixedDuration = fixedDuration;
+			_optionalFixedDuration = fixedDuration;
 		}
 		
 		// get the loop count, if present
 		DDXMLNode *playCountAttr = [elem attributeForName:@"playCount"];
-		mPlayCount = 1;
+		_playCount = 1;
 		if(playCountAttr)
 		{
 			NSString *playCountStr = [playCountAttr stringValue];
 			// parse it from timecode (mm:ss.mmmm) to seconds
-			mPlayCount = [playCountStr intValue];
+			_playCount = [playCountStr intValue];
 		}
 		
 	}
@@ -63,50 +64,50 @@ const double kDoesntHaveFixedDuration = -1.0;
 }
 -(double)nextWritePos
 {
-	return mNextWritePos;
+	return self.nextWritePosInternal;
 }
 -(void)setNextWritePos:(double)newPos
 {
 	// for par's, track the longest child
-	if(newPos > mGreatestNextWritePos)
-		mGreatestNextWritePos = newPos;
+	if(newPos > self.greatestNextWritePos)
+		self.greatestNextWritePos = newPos;
 	
 	// in par's, this will be reset for each child
 	// (but we accumulate it anyway, since child tracks may need a current pos anyway
 	// (e.g., repeating audio tracks)
-	mNextWritePos = newPos;
+	self.nextWritePosInternal = newPos;
 	
 }
 -(double)durationOfMediaAndFixedPadding
 {
 #if qDurationIsReadonly
-	return mGreatestDurationOfMediaAndFixedPadding;
+	return self.greatestDurationOfMediaAndFixedPadding;
 #else
-	return mDurationOfMediaAndFixedPadding;
+	return self.durationOfMediaAndFixedPaddingInternal;
 #endif
 }
 
 #if qDurationIsReadonly
 -(void)addToMediaAndFixedPadding:(double)duration
 {
-	mDurationOfMediaAndFixedPadding += duration;
-	if(mDurationOfMediaAndFixedPadding > mGreatestDurationOfMediaAndFixedPadding)
-		mGreatestDurationOfMediaAndFixedPadding = mDurationOfMediaAndFixedPadding;
+	self.durationOfMediaAndFixedPaddingInternal += duration;
+	if(self.durationOfMediaAndFixedPadding > self.greatestDurationOfMediaAndFixedPadding)
+		self.greatestDurationOfMediaAndFixedPadding = self.durationOfMediaAndFixedPaddingInternal;
 }
 
 #else
 -(void)setDurationOfMediaAndFixedPadding:(double)durationOfMediaAndFixedPadding
 {
 	// par's don't accumulate fixed padding
-	if(mIsParallel)
-		mDurationOfMediaAndFixedPadding = 0.0;
+	if(self.isParallel)
+		self.durationOfMediaAndFixedPadding = 0.0;
 	else
-		mDurationOfMediaAndFixedPadding = durationOfMediaAndFixedPadding;
+		self.durationOfMediaAndFixedPadding = durationOfMediaAndFixedPadding;
 }
 #endif
 -(void)passOneResolvePadding
 {
-	for(SubSegmentBuilder *child in mChildBuilders)
+	for(SubSegmentBuilder *child in self.childBuilders)
 	{
 		[child passOneResolvePadding];
 	}
@@ -115,7 +116,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 -(bool)hasAnyFixedDurations
 {
 	bool hasAny = false;
-	if(mOptionalFixedDuration != kDoesntHaveFixedDuration)
+	if(self.optionalFixedDuration != kDoesntHaveFixedDuration)
 		hasAny = true;
 	else if(mParent)
 	{
@@ -130,16 +131,16 @@ const double kDoesntHaveFixedDuration = -1.0;
 -(double)durationToFill
 {
 	double remaining = 0.0;
-	if(mOptionalFixedDuration != kDoesntHaveFixedDuration)
+	if(self.optionalFixedDuration != kDoesntHaveFixedDuration)
 	{
 		// we have a fixed duration
 		// so return how much of ourselves remains
-		remaining = self.optionalFixedDuration - mDurationOfMediaAndFixedPadding;
+		remaining = self.optionalFixedDuration - self.durationOfMediaAndFixedPadding;
 		
 	}
 	else if(mParent)
 	{
-		remaining = mGreatestDurationOfMediaAndFixedPadding;
+		remaining = self.greatestDurationOfMediaAndFixedPadding;
 		
 		if(mParent)
 		{
@@ -171,11 +172,13 @@ const double kDoesntHaveFixedDuration = -1.0;
 		beginTimeInParent = mParent.nextWritePos;
 	
 	// rewind to our beginning.
-	mNextWritePos  = beginTimeInParent;
+	self.nextWritePos  = beginTimeInParent;
+	// was using the internal value directly.  was this a bug or a feature?
+	//self.nextWritePosInternal = beginTimeInParent;
 	
 	// recurse into the children
 	// (par's orchestrate which track to use here)
-	[mChildBuilders enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+	[self.childBuilders enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		SubSegmentBuilder *child = (SubSegmentBuilder *)obj;
 		
 
@@ -185,9 +188,9 @@ const double kDoesntHaveFixedDuration = -1.0;
 		//AVMutableCompositionTrack *compositionTrackToUse = builder.trackStack.currentTrack ;
 		int savedVideoTrackIndex = builder.trackStack.currentVideoTrackIndex;
 		int savedAudioTrackIndex = builder.trackStack.currentAudioTrackIndex;
-		if(mIsParallel)
+		if(self.isParallel)
 		{
-			mNextWritePos = beginTimeInParent;
+			self.nextWritePos = beginTimeInParent;
 			//mNextLocalWritePos = beginTimeInParent;
 						
 			//mCompositionTrack = [[mComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid] retain];
@@ -196,7 +199,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 		[child passTwoApplyMedia:builder intoAudioTrack:compositionAudioTrackToUse andVideoTrack:compositionVideoTrackToUse];
 		//[child passTwoApplyMedia:builder intoTrack:compositionTrackToUse];
 		
-		if(mIsParallel)
+		if(self.isParallel)
 		{
 			// advance (but don't yet allocate) the track stack
 			builder.trackStack.currentAudioTrackIndex += 1;
@@ -235,8 +238,8 @@ const double kDoesntHaveFixedDuration = -1.0;
 	
 	// update our parent to our last write pos
 	// (parent par's will clobber this, of course)
-	if(mParent)
-		mParent.nextWritePos = mNextWritePos;
+	if(self.parent)
+		self.parent.nextWritePos = self.nextWritePos;
 }
 
 @end

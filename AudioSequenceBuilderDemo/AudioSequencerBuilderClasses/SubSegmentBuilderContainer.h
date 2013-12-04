@@ -14,32 +14,17 @@
 extern const double kDoesntHaveFixedDuration;
 
 @interface SubSegmentBuilderContainer : SubSegmentBuilder
-{
-    bool mIsParallel;
-	NSMutableArray *mChildBuilders;
-	
-	double mOptionalFixedDuration;
+@property (nonatomic, assign, readonly) NSMutableArray *childBuilders;
+@property (nonatomic, assign, readonly) int playCount;
 #if qDurationIsReadonly
-	double mGreatestDurationOfMediaAndFixedPadding;
-#endif
-	double mDurationOfMediaAndFixedPadding;
-	double mTotalOfAllocatedRatios;
-	int mPlayCount;
-	
-	double mNextWritePos; // for par's this will always be zero!
-	double mGreatestNextWritePos; // useful for par's, to know the largest child duration
-}
-@property (nonatomic, readonly) NSMutableArray *childBuilders;
-@property (nonatomic, readonly) int playCount;
-#if qDurationIsReadonly
-@property (nonatomic, readonly) double durationOfMediaAndFixedPadding;
+@property (nonatomic, assign, readonly) double durationOfMediaAndFixedPadding;
 #else
-@property (nonatomic) double durationOfMediaAndFixedPadding;
+@property (nonatomic, assign) double durationOfMediaAndFixedPadding;
 #endif
-@property (nonatomic) double totalOfAllocatedRatios;
-@property (nonatomic, readonly) double optionalFixedDuration;
-@property (nonatomic) double nextWritePos;
-@property (nonatomic, readonly) bool isParallel;
+@property (nonatomic, assign) double totalOfAllocatedRatios;
+@property (nonatomic, assign, readonly) double optionalFixedDuration;
+@property (nonatomic, assign) double nextWritePos;
+@property (nonatomic, assign, readonly) BOOL isParallel;
 
 -(double)durationToFill;
 -(bool)hasAnyFixedDurations;

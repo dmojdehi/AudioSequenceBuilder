@@ -24,17 +24,6 @@ typedef enum
 	
 } LoopToFitParent;
 
-@interface SubSegmentBuilderSound : SubSegmentBuilder {
-    
-	NSString *mFilename;
-	NSString *mFilenameOfTrimmedMedia;
-	double mMarkIn;
-	double mMarkOut;
-	double mVolume;
-	double mSpeed;
-	AVURLAsset *mAsset;
-	bool mIsNavigable;
-	LoopLogic *mLoopLogic;
-}
+@interface SubSegmentBuilderSound : SubSegmentBuilder
 +(NSURL *)findAudioFile:(NSString *)filename;
 @end
