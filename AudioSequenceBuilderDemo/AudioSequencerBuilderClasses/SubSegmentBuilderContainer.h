@@ -14,7 +14,7 @@
 extern const double kDoesntHaveFixedDuration;
 
 @interface SubSegmentBuilderContainer : SubSegmentBuilder
-@property (nonatomic, assign, readonly) NSMutableArray *childBuilders;
+@property (nonatomic, strong, readonly) NSMutableArray *childBuilders;
 @property (nonatomic, assign, readonly) int playCount;
 #if qDurationIsReadonly
 @property (nonatomic, assign, readonly) double durationOfMediaAndFixedPadding;
