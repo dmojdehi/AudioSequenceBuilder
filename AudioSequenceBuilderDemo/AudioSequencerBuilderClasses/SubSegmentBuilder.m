@@ -17,27 +17,24 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation SubSegmentBuilder
 
-@synthesize element = mElement;
-@synthesize parent = mParent;
-
 -(id)initWithElem:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent
 {
     self = [super init];
     if (self) {
         // Initialization code here.
-		mElement = elem;
-		mParent = parent;
-		mId = [[[elem attributeForName:@"id"] stringValue] copy];
+		_element = elem;
+		_parent = parent;
+		_xmlId = [[[elem attributeForName:@"id"] stringValue] copy];
 		
 		// get the tags from:
 		//			tags="xyz,pdq,mnop"
-		mTags = [[NSMutableSet alloc]init ];
+		_tags = [[NSMutableSet alloc]init ];
 		NSString *tags = [[elem attributeForName:@"tags"] stringValue];
 		NSArray *tagsArray = [tags componentsSeparatedByString:@","];
 		[tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			NSString *objAsString = (NSString *)obj;
 			NSString *withoutComma = [objAsString stringByReplacingOccurrencesOfString:@"," withString:@""];
-			[mTags addObject:withoutComma];
+			[_tags addObject:withoutComma];
 		}];
 
     }
@@ -94,20 +91,12 @@
 			if(segBuilderAsContainer.optionalFixedDuration == kDoesntHaveFixedDuration)
 			{
 				// the container is variably-sized, so accumulate that size
-#if qDurationIsReadonly
 				[parent addToMediaAndFixedPadding:segBuilderAsContainer.durationOfMediaAndFixedPadding];
-#else
-				parent.durationOfMediaAndFixedPadding += segBuilderAsContainer.durationOfMediaAndFixedPadding;
-#endif
 			}
 			else
 			{
 				// the container has a fixed size, so we accumulate that
-#if qDurationIsReadonly
 				[parent addToMediaAndFixedPadding:segBuilderAsContainer.optionalFixedDuration];
-#else
-				parent.durationOfMediaAndFixedPadding += segBuilderAsContainer.optionalFixedDuration;
-#endif
 			}			
 		}
 
@@ -168,7 +157,11 @@
 {
 	
 }
+#if qSimplifiedStack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
+#else
 -(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)audioTrack andVideoTrack:(AVMutableCompositionTrack*)videoTrack
+#endif
 {
 }
 

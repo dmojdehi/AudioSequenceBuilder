@@ -86,7 +86,29 @@
 	[segBuilder passOneResolvePadding];
 	
 	// final pass: write the media out!
+#if qSimplifiedStack
+	[segBuilder passTwoApplyMedia:self];
+#else
 	[segBuilder passTwoApplyMedia:self intoAudioTrack:nil andVideoTrack:nil];
+#endif
+	
+	
+	
+#if qSimplifiedStack
+	// remove empty tracks
+	// (this happens because PAR's must pre-generate tracks for each child.
+	//   Could fix this by making the track stack smarter about when they create new tracks, but it's tricky
+	//    <Par> <Seq>...</seq> <Seq>...</seq> </Par>  each inner seq must know to create a new track
+	NSMutableArray *emptyTracks = [NSMutableArray array];
+	[self.trackStack.composition.tracks enumerateObjectsUsingBlock:^(AVCompositionTrack *t, NSUInteger idx, BOOL *stop) {
+		if(t.segments.count == 0)
+		   [emptyTracks addObject:t];
+	}];
+	[emptyTracks enumerateObjectsUsingBlock:^(AVCompositionTrack *emptyTrack, NSUInteger idx, BOOL *stop) {
+		[self.trackStack.composition removeTrack:emptyTrack];
+	}];
+#endif
+
 	
 	// get the audio envelopes, and apply them all
 	AVMutableAudioMix *theAudioMix = [AVMutableAudioMix audioMix];
@@ -261,10 +283,6 @@
 @property (nonatomic, strong) NSMutableArray *videoTracks;
 @end
 @implementation TrackStack
-//@synthesize composition;
-//@synthesize currentAudioTrackIndex;
-//@synthesize currentVideoTrackIndex;
-//@synthesize audioTracks, videoTracks;
 -(id)init
 {
 	self=[super init];
@@ -278,7 +296,41 @@
 	}
 	return self;
 }
+#if qSimplifiedStack
+-(AVMutableCompositionTrack*) getOrCreateNextAudioTrack
+{
+	// get (or make) the current track
+	if(self.currentAudioTrackIndex >= [self.audioTracks count])
+	{
+		AVMutableCompositionTrack *newtrack = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+		[self.audioTracks addObject:newtrack];
 
+	}
+	AVMutableCompositionTrack *track = [self.audioTracks objectAtIndex:self.currentAudioTrackIndex];
+	if(self.isParMode)
+		self.currentAudioTrackIndex++;
+
+	return track;
+}
+-(AVMutableCompositionTrack*) getOrCreateNextVideoTrack
+{
+	// get (or make) the current track
+	if(self.currentVideoTrackIndex >= [self.videoTracks count])
+	{
+		AVMutableCompositionTrack *newtrack = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+		[self.videoTracks addObject:newtrack];
+
+	}
+
+	AVMutableCompositionTrack *track = [self.videoTracks objectAtIndex:self.currentVideoTrackIndex];
+	if(self.isParMode)
+		self.currentVideoTrackIndex++;
+
+	return track;
+}
+
+
+#else
 -(AVMutableCompositionTrack*) currentAudioTrack
 {
 	// get (or make) the current track
@@ -303,36 +355,6 @@
 	
 	return self.videoTracks[self.currentVideoTrackIndex];
 }
+#endif
 
-//-(AVMutableCompositionTrack*) getOrCreateNextAudioTrack
-//{
-//	// get (or make) the current track
-//	if(currentAudioTrackIndex >= [audioTracks count])
-//	{
-//		AVMutableCompositionTrack *newtrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-//		[audioTracks addObject:newtrack];
-//
-//	}
-//	AVMutableCompositionTrack *track = [audioTracks objectAtIndex:currentAudioTrackIndex];
-//	if(_isParMode)
-//		currentAudioTrackIndex++;
-//	   
-//	return track;
-//}
-//-(AVMutableCompositionTrack*) getOrCreateNextVideoTrack
-//{
-//	// get (or make) the current track
-//	if(currentVideoTrackIndex >= [videoTracks count])
-//	{
-//		AVMutableCompositionTrack *newtrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-//		[videoTracks addObject:newtrack];
-//		
-//	}
-//	
-//	AVMutableCompositionTrack *track = [videoTracks objectAtIndex:currentVideoTrackIndex];
-//	if(_isParMode)
-//		currentVideoTrackIndex++;
-//
-//	return track;
-//}
 @end

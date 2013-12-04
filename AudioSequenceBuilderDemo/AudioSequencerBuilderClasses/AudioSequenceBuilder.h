@@ -17,15 +17,10 @@
 @class TrackStack;
 
 
+#define qSimplifiedStack 1
+
+
 @interface AudioSequenceBuilder : NSObject
-//{
-//	DDXMLDocument *mDocument;
-//	NSMutableDictionary	*mElementDictionary;
-//	NSMutableArray *mNavigationTimes;
-//
-//	NSMutableDictionary *mAudioEnvelopesForTracks;
-//	TrackStack *mTrackStack;
-//}
 
 @property (nonatomic, readonly) DDXMLDocument *document;
 @property (nonatomic, readonly) NSArray *navigationTimes;
@@ -45,15 +40,17 @@
 
 @end
 
-
 @interface TrackStack : NSObject
-@property (nonatomic, readonly, strong) AVMutableCompositionTrack* currentAudioTrack;
-@property (nonatomic, readonly, strong) AVMutableCompositionTrack* currentVideoTrack;
 @property (nonatomic, assign) int currentAudioTrackIndex;
 @property (nonatomic, assign) int currentVideoTrackIndex;
-//@property (nonatomic, assign) BOOL isParMode;
+#if qSimplifiedStack
+@property (nonatomic, assign) BOOL isParMode;
+-(AVMutableCompositionTrack*) getOrCreateNextAudioTrack;
+-(AVMutableCompositionTrack*) getOrCreateNextVideoTrack;
+#else
+@property (nonatomic, readonly, strong) AVMutableCompositionTrack* currentAudioTrack;
+@property (nonatomic, readonly, strong) AVMutableCompositionTrack* currentVideoTrack;
+#endif
 @property (nonatomic, readonly, strong) AVMutableComposition *composition;
-//-(AVMutableCompositionTrack*) getOrCreateNextAudioTrack;
-//-(AVMutableCompositionTrack*) getOrCreateNextVideoTrack;
 
 @end

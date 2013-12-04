@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AudioSequenceBuilder.h"
 
 @class DDXMLElement;
 @class AudioSequenceBuilder;
@@ -15,22 +16,20 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface SubSegmentBuilder : NSObject
-{
-	DDXMLElement * mElement;
-	__weak SubSegmentBuilderContainer *mParent;	
-	NSString *mId;
-	NSMutableSet	*mTags;
-	double mBeginTimeInParent;
-}
 @property (nonatomic, readonly) DDXMLElement *element;
 @property (nonatomic, readonly, weak) SubSegmentBuilderContainer *parent;
+@property (nonatomic, readonly, strong) NSString *xmlId;
+@property (nonatomic, readonly, strong) NSMutableSet *tags;
 
 -(id)initWithElem:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent;
 +(SubSegmentBuilder*)makeAudioSegmentBuilderFor:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent;
 
 -(void)passOneResolvePadding;
+#if qSimplifiedStack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder;
+#else
 -(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)audioTrack andVideoTrack:(AVMutableCompositionTrack*)videoTrack;
-//-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder;
+#endif
 
 @end
 

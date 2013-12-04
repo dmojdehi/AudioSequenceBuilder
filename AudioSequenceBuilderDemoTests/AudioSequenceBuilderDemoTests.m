@@ -51,6 +51,8 @@
     [super setUp];
     
     // Set-up code here.
+	
+	[SenTestCase testCaseWithSelector:@selector(foobar)];
 }
 
 - (void)tearDown
@@ -64,39 +66,77 @@
 //{
 //    STFail(@"Unit tests are not implemented yet in AudioSequenceBuilderDemoTests");
 //}
-
-#define ISCLOSETO(a,b)  ((a >= b *0.99) && (a<= b*1.01)) 
--(void)testAudioSimpleLooping
+-(void)foobar
 {
 	
-#if 0
-	// these tests fail currently
-	NSArray *xmlFilesToTest = [NSArray arrayWithObjects:
-							   @"testNestedDurations",
-							   @"testParDurations",
-							   nil];
-#else
-	NSArray *xmlFilesToTest = [NSArray arrayWithObjects:
-							   @"testSimpleLoop",
-							   @"testSimpleLoopNested",
-							   //@"testNestedDurations",
-							   @"testNestedDurations2",
-							   @"testNestedDurations3",
-							   @"testNestedDurationsMore",
-							   //@"testParDurations",
-							   @"testSimpleSequence",
-							   @"testTracksSimple",
-							   @"testTracksComplex1",
-							   nil];
-#endif
-	for(NSString *filename in xmlFilesToTest)
-	{
-		[self performTestingForXml:filename];
-	}
-	
-	
-	
 }
+
+#define ISCLOSETO(a,b)  ((a >= b *0.99) && (a<= b*1.01)) 
+//-(void)testAudioSimpleLooping
+//{
+//	
+//#if 0
+//	// these tests fail currently
+//	NSArray *xmlFilesToTest = [NSArray arrayWithObjects:
+//							   @"testNestedDurations",
+//							   @"testParDurations",
+//							   nil];
+//#else
+//	NSArray *xmlFilesToTest = @[
+//							   @"testSimpleLoop",
+//							   @"testSimpleLoopNested",
+//							   //@"testNestedDurations",
+//							   @"testNestedDurations2",
+//							   @"testNestedDurations3",
+//							   @"testNestedDurationsMore",
+//							   //@"testParDurations",
+//							   @"testSimpleSequence",
+//							   @"testTracksSimple",
+//							   @"testTracksComplex1"
+//							   ];
+//#endif
+//	for(NSString *filename in xmlFilesToTest)
+//	{
+//		[self performTestingForXml:filename];
+//	}
+//	
+//	
+//	
+//}
+
+-(void)testSimpleLoop
+{
+	[self performTestingForXml:@"testSimpleLoop"];
+}
+-(void)testSimpleLoopNested
+{
+	[self performTestingForXml:@"testSimpleLoopNested"];
+}
+-(void)testNestedDurations2
+{
+	[self performTestingForXml:@"testNestedDurations2"];
+}
+-(void)testNestedDurations3
+{
+	[self performTestingForXml:@"testNestedDurations3"];
+}
+-(void)testNestedDurationsMore
+{
+	[self performTestingForXml:@"testNestedDurationsMore"];
+}
+-(void)testSimpleSequence
+{
+	[self performTestingForXml:@"testSimpleSequence"];
+}
+-(void)testTracksSimple
+{
+	[self performTestingForXml:@"testTracksSimple"];
+}
+-(void)testTracksComplex1
+{
+	[self performTestingForXml:@"testTracksComplex1"];
+}
+
 
 -(void)performTestingForXml:(NSString *)filename
 {

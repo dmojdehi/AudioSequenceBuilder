@@ -11,20 +11,11 @@
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-@interface SubSegmentBuilderFixedSilence : SubSegmentBuilder {
-	double mFixedDuration;
-	
-}
-
+@interface SubSegmentBuilderFixedSilence : SubSegmentBuilder
 @end
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-@interface SubSegmentBuilderRelativeSilence : SubSegmentBuilder {
-	
-    double mRatio;
-	double mResolvedTimeToPad;
-	SubSegmentBuilderContainer *mAncestorWithFixedDurationNotRetained;
-}
+@interface SubSegmentBuilderRelativeSilence : SubSegmentBuilder
 @end
 

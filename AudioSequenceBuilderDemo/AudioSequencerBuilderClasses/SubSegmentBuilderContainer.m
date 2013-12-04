@@ -17,9 +17,7 @@ const double kDoesntHaveFixedDuration = -1.0;
 @property (nonatomic, assign) double greatestNextWritePos;
 @property (nonatomic, assign) double nextWritePosInternal;
 @property (nonatomic, assign) double durationOfMediaAndFixedPaddingInternal;
-#if qDurationIsReadonly
 @property (nonatomic, assign) double greatestDurationOfMediaAndFixedPadding;
-#endif
 @end
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation SubSegmentBuilderContainer
@@ -80,14 +78,9 @@ const double kDoesntHaveFixedDuration = -1.0;
 }
 -(double)durationOfMediaAndFixedPadding
 {
-#if qDurationIsReadonly
 	return self.greatestDurationOfMediaAndFixedPadding;
-#else
-	return self.durationOfMediaAndFixedPaddingInternal;
-#endif
 }
 
-#if qDurationIsReadonly
 -(void)addToMediaAndFixedPadding:(double)duration
 {
 	self.durationOfMediaAndFixedPaddingInternal += duration;
@@ -95,16 +88,6 @@ const double kDoesntHaveFixedDuration = -1.0;
 		self.greatestDurationOfMediaAndFixedPadding = self.durationOfMediaAndFixedPaddingInternal;
 }
 
-#else
--(void)setDurationOfMediaAndFixedPadding:(double)durationOfMediaAndFixedPadding
-{
-	// par's don't accumulate fixed padding
-	if(self.isParallel)
-		self.durationOfMediaAndFixedPadding = 0.0;
-	else
-		self.durationOfMediaAndFixedPadding = durationOfMediaAndFixedPadding;
-}
-#endif
 -(void)passOneResolvePadding
 {
 	for(SubSegmentBuilder *child in self.childBuilders)
@@ -118,10 +101,10 @@ const double kDoesntHaveFixedDuration = -1.0;
 	bool hasAny = false;
 	if(self.optionalFixedDuration != kDoesntHaveFixedDuration)
 		hasAny = true;
-	else if(mParent)
+	else if(self.parent)
 	{
 		// we're not fixed, perhaps a parent is?
-		hasAny = [mParent hasAnyFixedDurations];	
+		hasAny = [self.parent hasAnyFixedDurations];
 	}
 	return hasAny;
 }
@@ -138,43 +121,47 @@ const double kDoesntHaveFixedDuration = -1.0;
 		remaining = self.optionalFixedDuration - self.durationOfMediaAndFixedPadding;
 		
 	}
-	else if(mParent)
+	else if(self.parent)
 	{
 		remaining = self.greatestDurationOfMediaAndFixedPadding;
 		
-		if(mParent)
+		if(self.parent)
 		{
 			// check if we are embedded in a parent that has a fixed duration
-			remaining = [mParent durationToFill];
+			remaining = [self.parent durationToFill];
 		}
 		
-#if qDurationIsReadonly
-#else
-		if(mParent.isParallel && !mIsParallel)
-		{
-			// if our parent is a par but we are a seq, we must remove any media time we have
-			// (if our parent were a Seq and we were a Seq, it would already have our media time)
-			// (if we were both Par's, neither of us would care)
-			remaining -= mDurationOfMediaAndFixedPadding;
-		}
-#endif
 	}
 	if(remaining < 0.0)
 		remaining = 0.0;
 	return remaining;
 }
 
+#if qSimplifiedStack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
+#else
 -(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)audioTrackIgnored andVideoTrack:(AVMutableCompositionTrack*)videoTrackIgnored
+#endif
 {
 	// at the beginning of this pass we remember our start pos
 	double beginTimeInParent = 0.0;
-	if(mParent)
-		beginTimeInParent = mParent.nextWritePos;
+	if(self.parent)
+		beginTimeInParent = self.parent.nextWritePos;
 	
 	// rewind to our beginning.
 	self.nextWritePos  = beginTimeInParent;
 	// was using the internal value directly.  was this a bug or a feature?
 	//self.nextWritePosInternal = beginTimeInParent;
+	
+	if(!self.isParallel && self.parent.isParallel)
+	{
+		// we get here for a seq inside a PAR
+		// we must pre-create a track for ourselves (and our children!)
+		// If these tracks aren't used they'll be cleaned up at the end
+		AVMutableCompositionTrack *a = [builder.trackStack getOrCreateNextAudioTrack];
+		AVMutableCompositionTrack *v = [builder.trackStack getOrCreateNextVideoTrack];
+	}
+
 	
 	// recurse into the children
 	// (par's orchestrate which track to use here)
@@ -182,7 +169,27 @@ const double kDoesntHaveFixedDuration = -1.0;
 		SubSegmentBuilder *child = (SubSegmentBuilder *)obj;
 		
 
-#if 1
+#if qSimplifiedStack
+		// set the 'par' mode on the track stack
+		// (media elems will create new tracks or reuse existing ones depending on this setting!)
+		builder.trackStack.isParMode = self.isParallel;
+		
+		int savedAudioTrackIndex = builder.trackStack.currentAudioTrackIndex;
+		int savedVideoTrackIndex = builder.trackStack.currentVideoTrackIndex;
+		if(self.isParallel)
+			self.nextWritePos = beginTimeInParent;
+
+		
+		[child passTwoApplyMedia:builder];
+		
+		
+		if(!self.isParallel)
+		{
+			//seq's restore the track index after child processing
+			builder.trackStack.currentAudioTrackIndex = savedAudioTrackIndex;
+			builder.trackStack.currentVideoTrackIndex = savedVideoTrackIndex;
+		}
+#else
 		AVMutableCompositionTrack *compositionAudioTrackToUse = builder.trackStack.currentAudioTrack;
 		AVMutableCompositionTrack *compositionVideoTrackToUse = builder.trackStack.currentVideoTrack;
 		//AVMutableCompositionTrack *compositionTrackToUse = builder.trackStack.currentTrack ;
@@ -197,7 +204,6 @@ const double kDoesntHaveFixedDuration = -1.0;
 			
 		}
 		[child passTwoApplyMedia:builder intoAudioTrack:compositionAudioTrackToUse andVideoTrack:compositionVideoTrackToUse];
-		//[child passTwoApplyMedia:builder intoTrack:compositionTrackToUse];
 		
 		if(self.isParallel)
 		{
@@ -211,29 +217,8 @@ const double kDoesntHaveFixedDuration = -1.0;
 			builder.trackStack.currentVideoTrackIndex = savedVideoTrackIndex;
 		}
 		
-		
-#else
-		// set the 'par' mode on the track stack
-		// (media elems will create new tracks or reuse existing ones depending on this setting!)
-		builder.trackStack.isParMode = mIsParallel;
-		
-		//AVMutableCompositionTrack *compositionTrackToUse = builder.trackStack.currentTrack ;
-		int savedAudioTrackIndex = builder.trackStack.currentAudioTrackIndex;
-		int savedVideoTrackIndex = builder.trackStack.currentVideoTrackIndex;
-		if(mIsParallel)
-		{
-			mNextWritePos = beginTimeInParent;
-		}
-		
-		[child passTwoApplyMedia:builder];
-		
-		if(!mIsParallel)
-		{
-			//seq's restore the track index after child processing
-			builder.trackStack.currentAudioTrackIndex = savedAudioTrackIndex;
-			builder.trackStack.currentVideoTrackIndex = savedVideoTrackIndex;
-		}
 #endif
+		
 	}];
 	
 	// update our parent to our last write pos

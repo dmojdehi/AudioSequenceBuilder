@@ -14,6 +14,10 @@
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+@interface SubSegmentBuilderFixedSilence()
+@property (nonatomic, assign) double fixedDuration;
+
+@end
 @implementation SubSegmentBuilderFixedSilence
 -(id)initWithElem:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent
 {
@@ -24,26 +28,26 @@
 		if(durationStr)
 		{
 			// parse it from timecode (mm:ss.mmmm) to seconds
-			mFixedDuration = [AudioSequenceBuilder parseTimecode:durationStr];
+			_fixedDuration = [AudioSequenceBuilder parseTimecode:durationStr];
 		}
 		else
 		{
 			[NSException raise:@"<padding> expected a fixed duration" format:@""];
 		}
 
-#if qDurationIsReadonly
-		[parent addToMediaAndFixedPadding: mFixedDuration];
-#else
-		parent.durationOfMediaAndFixedPadding += mFixedDuration;
-#endif
+		[parent addToMediaAndFixedPadding: _fixedDuration];
 		
 	}
 	return self;
 }
 
+#if qSimplifiedStack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
+#else
 -(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)audioTrack andVideoTrack:(AVMutableCompositionTrack*)videoTrack
+#endif
 {
-	mParent.nextWritePos += mFixedDuration;
+	self.parent.nextWritePos += self.fixedDuration;
 }
 
 
@@ -51,12 +55,18 @@
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+@interface SubSegmentBuilderRelativeSilence()
+@property (nonatomic, assign) double ratio;
+@property (nonatomic, assign) double resolvedTimeToPad;
+@property (nonatomic, strong) SubSegmentBuilderContainer *ancestorWithFixedDurationNotRetained;
+
+@end
 @implementation SubSegmentBuilderRelativeSilence
 -(id)initWithElem:(DDXMLElement*)elem inContainer:(SubSegmentBuilderContainer*)parent
 {
 	if((self = [super initWithElem:elem inContainer:parent]))
 	{
-		mResolvedTimeToPad = -1.0;
+		_resolvedTimeToPad = -1.0;
 		
 		DDXMLNode  *ratioAttr = [elem attributeForName:@"ratio"];		
 		if(ratioAttr)
@@ -68,7 +78,7 @@
 			//	  - we also use that parent as the place we store the total ratio counter
 			//
 			// we will *block* on it's completion, then use *it* to derive our position info
-			mRatio = [[ratioAttr stringValue] doubleValue];
+			_ratio = [[ratioAttr stringValue] doubleValue];
 		}
 		else
 		{
@@ -76,14 +86,14 @@
 		}
 		
 		// find our ancestor with a fixed duration, and accumulate our ratio into it
-		mAncestorWithFixedDurationNotRetained = nil;
+		_ancestorWithFixedDurationNotRetained = nil;
 		SubSegmentBuilderContainer *ancestor = parent;
 		while(ancestor)
 		{
 			if(ancestor.optionalFixedDuration != kDoesntHaveFixedDuration)
 			{
-				ancestor.totalOfAllocatedRatios += mRatio;
-				mAncestorWithFixedDurationNotRetained = ancestor;
+				ancestor.totalOfAllocatedRatios += _ratio;
+				_ancestorWithFixedDurationNotRetained = ancestor;
 				break;
 			}
 			ancestor = ancestor.parent;
@@ -101,12 +111,12 @@
 	// note that any seq siblings are also dependent on us!
 	// (so subsequent relative paddings will come aftwerwards
 	//double amountToPad = mAncestorWithFixedDurationNotRetained.optionalFixedDuration - mAncestorWithFixedDurationNotRetained.durationOfMediaAndFixedPadding;
-	double amountToPad = [mParent durationToFill];
+	double amountToPad = [self.parent durationToFill];
 	
 	if(amountToPad > 0.0)
 	{
-		mResolvedTimeToPad = amountToPad * mRatio / mAncestorWithFixedDurationNotRetained.totalOfAllocatedRatios;
-		NSLog(@"2nd pass: Added relative padding of %f seconds (ratio:%f of needed padding:%f, new pos = %f)", mResolvedTimeToPad, mRatio, amountToPad, mParent.nextWritePos);
+		self.resolvedTimeToPad = amountToPad * self.ratio / _ancestorWithFixedDurationNotRetained.totalOfAllocatedRatios;
+		NSLog(@"2nd pass: Added relative padding of %f seconds (ratio:%f of needed padding:%f, new pos = %f)", self.resolvedTimeToPad, self.ratio, amountToPad, self.parent.nextWritePos);
 	}
 	else
 	{
@@ -115,9 +125,13 @@
 	}
 }
 
+#if qSimplifiedStack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
+#else
 -(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)audioTrack andVideoTrack:(AVMutableCompositionTrack*)videoTrack
+#endif
 {
-	mParent.nextWritePos += mResolvedTimeToPad;
+	self.parent.nextWritePos += self.resolvedTimeToPad;
 }
 
 @end

@@ -191,24 +191,32 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 		if(self.loopLogic.loopMode == kLoopNone)
 		{
 			double speedMultiplier = 1.0/ self.speed;
-#if qDurationIsReadonly
 			[parent addToMediaAndFixedPadding: (_markOut - _markIn) * speedMultiplier];
-#else
-			parent.durationOfMediaAndFixedPadding += (_markOut - _markIn) * speedMultiplier;
-#endif
 		}
 	}
 	return self;
 }
 
 
+#if qSimplifiedStack
+-(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder
+#else
 -(void)passTwoApplyMedia:(AudioSequenceBuilder*)builder intoAudioTrack:(AVMutableCompositionTrack*)compositionAudioTrack andVideoTrack:(AVMutableCompositionTrack*)compositionVideoTrack
+#endif
 {
-	bool mHasVideo = [[self.asset tracksWithMediaType:AVMediaTypeVideo] count] > 0;
+	bool hasVideo = [[self.asset tracksWithMediaType:AVMediaTypeVideo] count] > 0;
 	
+	
+#if qSimplifiedStack
+	AVMutableCompositionTrack *compositionAudioTrack = [builder.trackStack getOrCreateNextAudioTrack];
+	AVMutableCompositionTrack *compositionVideoTrack = nil;
+	if(hasVideo)
+		compositionVideoTrack = [builder.trackStack getOrCreateNextVideoTrack];
+#endif
+		
 #if DEBUG
 	int trackID  = compositionAudioTrack.trackID;
-	NSLog(@"2nd pass: Adding sound: '%@' to track id:%d (at pos: %f)",self.filename, trackID, mParent.nextWritePos);
+	NSLog(@"2nd pass: Adding sound: '%@' to track id:%d (at pos: %f)",self.filename, trackID, self.parent.nextWritePos);
 #endif
 	
 	// find the destination tracks
@@ -225,7 +233,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 	}
 	
 	AVAssetTrack *sourceVideoTrack = nil;
-	if(mHasVideo)
+	if(hasVideo)
 	{
 		sourceVideoTrack = [self.asset tracksWithMediaType:AVMediaTypeVideo][0];
 		if(!sourceVideoTrack)
@@ -245,13 +253,13 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 	NSError *err = nil;
 	
 	// parent span as a timerange
-	//CMTimeRange parentDuration = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(mParent.durationOfMediaAndFixedPadding, 44100));
+	//CMTimeRange parentDuration = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(self.parent.durationOfMediaAndFixedPadding, 44100));
 	
 	[self.loopLogic begin];
 	
 	// the time to fill
-	//CMTime endingWritePos = CMTimeMakeWithSeconds(mParent.optionalFixedDuration, 44100);
-	//		CMTime desiredTotalDuration = CMTimeMakeWithSeconds(mParent.durationOfMediaAndFixedPadding, 44100);
+	//CMTime endingWritePos = CMTimeMakeWithSeconds(self.parent.optionalFixedDuration, 44100);
+	//		CMTime desiredTotalDuration = CMTimeMakeWithSeconds(self.parent.durationOfMediaAndFixedPadding, 44100);
 	//		CMTimeRange rangeToFill = CMTimeRangeMake(initialWritePos, desiredTotalDuration);
 	
 	CMTime markIn = CMTimeMakeWithSeconds(_markIn, 44100);
@@ -267,7 +275,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 	// loop as long as the next write pos is less than the final pos
 	while([self.loopLogic more])
 	{
-		CMTime insertionPos = CMTimeMakeWithSeconds(mParent.nextWritePos, 44100);
+		CMTime insertionPos = CMTimeMakeWithSeconds(self.parent.nextWritePos, 44100);
 		CMTime markOutToUse = markOut;
 		double moreRemaining = [self.loopLogic moreRemaining];
 
@@ -335,7 +343,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 		// if this sound is to be used in next/prev navigation, add it now
 		if(builder && self.isNavigable)
 		{
-			[builder addNavigationTime:mParent.nextWritePos];
+			[builder addNavigationTime:self.parent.nextWritePos];
 			
 		}
 		
@@ -345,7 +353,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 												  atTime:insertionPos
 												   error:&errA];
 		BOOL successV = YES;
-		if(mHasVideo && sourceVideoTrack && compositionVideoTrack)
+		if(hasVideo && sourceVideoTrack && compositionVideoTrack)
 		{
 			successV = [compositionVideoTrack insertTimeRange:sourceMarkInOutTimeRange
 												 ofTrack:sourceVideoTrack
@@ -355,7 +363,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 		
 		if(!successA || !successV || errA || errV)
 		{
-			NSLog(@"...  FAILED to add sound at %f.  Error was: '%@'", mParent.nextWritePos, [err localizedDescription]);
+			NSLog(@"...  FAILED to add sound at %f.  Error was: '%@'", self.parent.nextWritePos, [err localizedDescription]);
 			break; // no more writing...
 		}
 		else
@@ -370,7 +378,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 				CMTime newDuration = CMTimeMultiplyByFloat64(sourceMarkInOutTimeRange.duration, 1.0 / self.speed);
 				
 				[compositionAudioTrack scaleTimeRange:insertedTime toDuration:newDuration];
-				if(mHasVideo)
+				if(hasVideo)
 					[compositionVideoTrack scaleTimeRange:insertedTime toDuration:newDuration];
 				
 				// the added amount is actually much longer
@@ -382,7 +390,7 @@ static NSMutableDictionary *sAudioTracksByName = nil;
 			// accumulates time into parent's nextWritePos
 			[self.loopLogic wroteSegment:self.filename dur:amountJustAdded];
 			
-			NSLog(@"...  added sound (new pos: %f)", mParent.nextWritePos);
+			NSLog(@"...  added sound (new pos: %f)", self.parent.nextWritePos);
 		}
 	
 
